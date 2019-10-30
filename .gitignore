@@ -1,0 +1,11 @@
+*
+#ignore everything("*") except "README.md", ".gitignore" and "src" folder(files inside "src" and inside subfolders of "src")
+
+!README.md
+
+!.gitignore
+
+#It is not possible to re-include a file if a parent directory of that file is excluded, so we have to do "!src" before "!src/**"
+!src 
+#For example, "abc/**" matches all files inside directory "abc", https://git-scm.com/docs/gitignore
+!src/** 
