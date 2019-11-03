@@ -1,1 +1,2 @@
-# Primena leksičkih resursa u sentiment analizi teksta
+# Sentiment text analysis using lexical resources
+

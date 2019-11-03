@@ -59,7 +59,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("C:\\Users\\jeca\\Desktop\\master_rad\\Collected_movie_reviews_in_Serbian\\2kokice.com\\1\\Freelancers (2012).txt", txt_file_paths[0])
 
     def test_find_encoding(self):
-        file_path = "C:\\Users\\jeca\\Desktop\\master_rad\\StopWords\\stopwordsSRB 1.txt"
+        file_path = "C:\\Users\\jeca\\Desktop\\master_rad\\sentiment-text-analysis-using-lexical-resources\\input_data\\StopWords\\stopwordsSRB 1.txt"
         result = Loader.find_encoding(file_path)
         self.assertEqual('UTF-16', result)
 
