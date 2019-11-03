@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
                         " svakako imena koja bi ušla u skoro svačije spiskove 10 najboljih glumaca, onda ovaj užas mnogo dobija na težini." \
                         " Uporno tražim informacije da li su u nekim kockarskim dugovima ili ih Fifti drži u šaci zbog nekog orgijanja sa ne znam " \
                         "kakvim životinjama. Jer to su jedini legitimni razlozi da učestvuju u ovakvom filmu. Bez obzira što čak i ima nekoliko" \
-                        " pozitivnih strana teret razočarenja je preveliki – dobija 0 kokica, jer ovo će se teško ponoviti. Proverite.\n"
+                        " pozitivnih strana teret razočarenja je preveliki – dobija 0 kokica, jer ovo će se teško ponoviti. Proverite."
         self.assertEqual(expected_text, data)
 
     def test_load_text_list_from_csv_file(self):

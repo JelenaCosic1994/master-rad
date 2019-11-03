@@ -30,4 +30,11 @@ class Parser:
         for sentence in sentences:
             sentence_without_stop_words = Parser(self._stop_words).remove_stop_words_from_sentence(sentence)
             text_without_stop_words += sentence_without_stop_words
-        return text_without_stop_words
+        return text_without_stop_words     # list of strings
+
+    def get_texts_without_stop_words(self, reviews_list):
+        reviews_without_stop_words = []
+        for review in reviews_list:
+            list_of_words_without_stop_words = Parser(self._stop_words).remove_stop_words_from_text(review)
+            reviews_without_stop_words.append(list_of_words_without_stop_words)
+        return reviews_without_stop_words   # list of lists

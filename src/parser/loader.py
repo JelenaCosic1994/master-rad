@@ -13,7 +13,7 @@ class Loader:
         f = open(filename, encoding=encoding)
         data = f.read()
         f.close()
-        return data
+        return data.rstrip()
 
     @staticmethod
     def find_encoding(file_path):
@@ -40,13 +40,12 @@ class Loader:
         text_list = []
         with open(file_path, encoding='utf8') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
+            first_row_passed = False
             for row in csv_reader:
-                if line_count == 0:
-                    line_count += 1
+                if not first_row_passed:
+                    first_row_passed = True
                     continue
                 text_list.append(row[0])
-                line_count += 1
         return text_list
 
     @staticmethod
