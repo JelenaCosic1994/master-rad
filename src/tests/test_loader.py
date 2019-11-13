@@ -1,11 +1,11 @@
 import unittest
-from src.parser.loader import Loader
+import src.parser.loader as loader
 
 
 class MyTestCase(unittest.TestCase):
 
     def test_load_text_from_txt(self):
-        data = Loader.load_text_from_txt_file("C:\\Users\\jeca\\Desktop\\master_rad\\text.txt")
+        data = loader.load_text_from_txt_file("..\\..\\input_data\\text.txt")
         expected_text = "U životu sam pogledao mnogo loših filmova. Iz raznih razloga. " \
                         "Vremenom sam se pomirio sa činjenicom da postoji dosta takvih I da obzirom na količinu otprilike " \
                         "svaki četvrti na koji nabasam mora biti loš. Kako su prolazili kroz moj DVD plejer, shvatio sam da " \
@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected_text, data)
 
     def test_load_text_list_from_csv_file(self):
-        text_list = Loader.load_text_list_from_csv_file("C:\\Users\\jeca\\Desktop\\master_rad\\SerbMR-2C.csv")
+        text_list = loader.load_text_list_from_csv_file("..\\..\\input_data\\SerbMR-2C.csv")
         self.assertEqual(
             "“Ulični Psi” je jedan od onih filmova koji svedoče da je originalna ideja znatno naprednija od ogromnog "
             "i bogatog projekta zasnovanog na već viđenoj radnji. Ovaj nisko budžetni film je zaista fantastično ostvarenje,"
@@ -55,12 +55,13 @@ class MyTestCase(unittest.TestCase):
             "što su me uopšte zainteresovali za dalju kinematografiju….", text_list[2])
 
     def test_get_all_txt_file_paths_from_dir(self):
-        txt_file_paths = Loader.get_all_txt_file_paths_from_dir("C:\\Users\\jeca\\Desktop\\master_rad\\Collected_movie_reviews_in_Serbian\\")
-        self.assertEqual("C:\\Users\\jeca\\Desktop\\master_rad\\Collected_movie_reviews_in_Serbian\\2kokice.com\\1\\Freelancers (2012).txt", txt_file_paths[0])
+        #  TODO: remove absolute file path
+        txt_file_paths = loader.get_all_txt_file_paths_from_dir("C:\\Users\\jeca\\Desktop\\master_rad\\sentiment-text-analysis-using-lexical-resources\\input_data\\Collected_movie_reviews_in_Serbian")
+        self.assertEqual("C:\\Users\\jeca\\Desktop\\master_rad\\sentiment-text-analysis-using-lexical-resources\\input_data\\Collected_movie_reviews_in_Serbian\\2kokice.com\\1\\Freelancers (2012).txt", txt_file_paths[0])
 
     def test_find_encoding(self):
-        file_path = "C:\\Users\\jeca\\Desktop\\master_rad\\sentiment-text-analysis-using-lexical-resources\\input_data\\StopWords\\stopwordsSRB 1.txt"
-        result = Loader.find_encoding(file_path)
+        file_path = "..\\..\\input_data\\StopWords\\stopwordsSRB 1.txt"
+        result = loader.find_encoding(file_path)
         self.assertEqual('UTF-16', result)
 
 

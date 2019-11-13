@@ -1,5 +1,6 @@
 import re
 import nltk
+from transliterate import translit
 
 
 class Parser:
@@ -13,7 +14,7 @@ class Parser:
 
     @staticmethod
     def get_sentences_from_text(text):
-        # nltk.download('punkt')  # ovo je moralo prvi put da se pozove da se skine biblioteka
+         # ovo je moralo prvi put da se pozove da se skine biblioteka
         return nltk.tokenize.sent_tokenize(text)
 
     def remove_stop_words_from_sentence(self, sentence):
@@ -38,3 +39,17 @@ class Parser:
             list_of_words_without_stop_words = Parser(self._stop_words).remove_stop_words_from_text(review)
             reviews_without_stop_words.append(list_of_words_without_stop_words)
         return reviews_without_stop_words   # list of lists
+
+    @staticmethod
+    def is_cyrillic_text(text):
+        return bool(re.search('[а-шА-Ш]', text))
+
+    @staticmethod
+    def convert_from_cyrillic_to_latinic(cyrillic_text):
+        return translit(cyrillic_text, 'sr', reversed=True)
+
+    @staticmethod
+    def convert_list_of_strings_from_cyrillic_to_latinic(list):
+        for i in range(len(list)):
+            if Parser.is_cyrillic_text(list[i]):
+                list[i] = Parser.convert_from_cyrillic_to_latinic(list[i])
