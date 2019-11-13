@@ -1,8 +1,6 @@
 import src.parser.loader as loader
 from src.parser.parser import Parser
-from src.stemmer.stemmer import stem_str
-# from pip._internal import main
-# main(['install','transliterate'])
+import src.stemmer.stemmer as stemmer
 
 
 if __name__ == '__main__':
@@ -39,4 +37,13 @@ if __name__ == '__main__':
     print("Done: list 2 without stop words")
     reviews_without_stop_words_3 = parser.get_texts_without_stop_words(reviews_from_txt_files)
     print("Done: list 3 without stop words")
+
+    # Applying stemmer
+    stem_text_words_1 = stemmer.stem_list_of_texts(reviews_without_stop_words_1)
+    print("Done: stemmer on list 1")
+    stem_text_words_2 = stemmer.stem_list_of_texts(reviews_without_stop_words_2)
+    print("Done: stemmer on list 2")
+    stem_text_words_3 = stemmer.stem_list_of_texts(reviews_without_stop_words_3)
+    print("Done: stemmer on list 3")
+
 

@@ -14,7 +14,6 @@ class Parser:
 
     @staticmethod
     def get_sentences_from_text(text):
-         # ovo je moralo prvi put da se pozove da se skine biblioteka
         return nltk.tokenize.sent_tokenize(text)
 
     def remove_stop_words_from_sentence(self, sentence):
