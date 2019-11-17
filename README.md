@@ -15,7 +15,7 @@
     - Corpus - film reviews: https://github.com/vukbatanovic/SerbMR, 
     - Stop words: https://drive.google.com/file/d/1tDSfweQkpWcatid1ykOQCJzRH26nZfnb/view?usp=sharing
 
-## Lybraries:
+## Libraries:
 - re
 - pathlib
 - csv
