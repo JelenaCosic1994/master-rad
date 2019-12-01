@@ -1,5 +1,5 @@
 import unittest
-import src.parser.loader as loader
+import src.util.loader as loader
 
 
 class MyTestCase(unittest.TestCase):

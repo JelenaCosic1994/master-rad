@@ -1,5 +1,5 @@
 import re
-from src.word import Word
+from src.entity.word import Word
 
 
 class Sentence:

@@ -1,5 +1,5 @@
 import nltk
-from src.sentence import Sentence
+from src.entity.sentence import Sentence
 
 
 class Text:
