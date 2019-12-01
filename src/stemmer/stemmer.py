@@ -433,17 +433,13 @@ def stem_str(str):
     return end_str
 
 
-def stem_list_of_words(input_list):
-    result_list = []
-    for word in input_list:
-        result_list.append(stem_str(word))
-    return result_list
+"""
 
+Changed by @Jelena Cosic
 
-def stem_list_of_texts(input_list):
-    stem_text_words = []
-    for list in input_list:
-        stem_text_words.append(stem_list_of_words(list))
-    return stem_text_words
-
-
+"""
+# out = stem_arr("Jovica je išao u školu. Marija je dobra devojka.")
+# out2 = stem_str("Jovica je išao u školu. Marija je dobra devojka.")
+#
+# print out
+# print out2

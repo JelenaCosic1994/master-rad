@@ -2,6 +2,7 @@ from pathlib import Path
 import csv
 import os
 import chardet
+import pandas as pd
 
 
 def load_text_from_txt_file(file_path):
@@ -54,3 +55,9 @@ def load_stop_words(dir_path):
         data += s
         data += "\n"
     return set(data.split())
+
+
+def load_xlsx_file(file_path):
+    xl = pd.ExcelFile(file_path)
+    data_frame = xl.parse('Sheet1')
+    return data_frame
