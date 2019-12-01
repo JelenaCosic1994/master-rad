@@ -52,7 +52,7 @@ class WordNetHelper:
                     break
         return list_of_ids
 
-    def set_pos_neg_score_for_word_from_english_wordnet(self, word):
+    def set_pos_neg_score_for_serbian_word(self, word):
         list_of_ids = self.find_all_ids_for_word_in_serbian_wordnet(word)
         n = 0
         pos_sum = 0
@@ -66,15 +66,27 @@ class WordNetHelper:
         word.set_pos_score(pos)
         word.set_neg_score(neg)
 
-    def set_pos_neg_score_for_sentence_from_english_wordnet(self, sentence):
+    def set_pos_neg_score_for_english_word(self, word):
+        pos_sum = 0
+        neg_sum = 0
+        n = 0
+        for key in self._map_words_and_pos_neg_score:
+            if word.get_data().strip() in key:
+                pos_sum += self._map_words_and_pos_neg_score[key][0]
+                neg_sum += self._map_words_and_pos_neg_score[key][1]
+                n += 1
+        pos, neg = (pos_sum / n, neg_sum / n) if n != 0 else (0, 0)
+        word.set_pos_score(pos)
+        word.set_neg_score(neg)
+
+    def set_pos_neg_score_for_sentence(self, sentence, is_serbian):
         pos_sum = 0
         neg_sum = 0
         n = len(sentence.get_words())
         for word in sentence.get_words():
-            self.set_pos_neg_score_for_word_from_english_wordnet(word)
+            self.set_pos_neg_score_for_serbian_word(word) if is_serbian else self.set_pos_neg_score_for_english_word(word)
             pos_sum += word.get_pos_score()
             neg_sum += word.get_neg_score()
         pos, neg = (pos_sum/n, neg_sum/n) if n != 0 else (0, 0)
         sentence.set_pos_score(pos)
         sentence.set_neg_score(neg)
-

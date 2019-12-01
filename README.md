@@ -18,7 +18,8 @@
     
 ## Input data:
 - Download all input data and locate them in folder src/input_data:
-    - Corpus - film reviews: https://github.com/vukbatanovic/SerbMR, 
+    - Serbian corpus - film reviews: https://github.com/vukbatanovic/SerbMR, 
+    - English corpus - film reviews: http://www.cs.cornell.edu/people/pabo/movie-review-data/review_polarity.tar.gz
     - Stop words: https://drive.google.com/file/d/1tDSfweQkpWcatid1ykOQCJzRH26nZfnb/view?usp=sharing
 
 ## Libraries:
