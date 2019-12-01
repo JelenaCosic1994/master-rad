@@ -1,12 +1,18 @@
 # Sentiment text analysis using lexical resources
 
-- Folder parser:
+- Folder util:
     - parser.py - contains functions for parsing film reviews from corpuses
-    - loader.py - contains functions for loading resources for parsing
-- Folder stemmer:
-    - stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
+    - loader.py - contains functions for loading resources
+    - converter.py - contains functions for converting
+    - serbian_stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
+    - wordnet_helper.py - class for manipulating data from wordnet (english and serbian)
+- Folder entity:
+    - word.py - class for representing word
+    - sentence.py - class for representing sentence
+    - text.py - class for representing text
 - Folder tests:
     - contains tests for functions in project
+- main.py - main file
 - Pdf document - LaTeX project: https://www.overleaf.com/read/syksdbwjhndc
 
     
@@ -23,6 +29,8 @@
 - chardet
 - nltk
 - transliterate
+- pandas
+- xml
 
 
 ## References:
