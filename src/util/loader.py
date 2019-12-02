@@ -34,8 +34,8 @@ def get_all_txt_file_paths_from_dir(dir_path):
     return file_paths
 
 
-def load_text_list_from_csv_file(file_path):
-    text_list = []
+def load_serbian_corpus_from_csv_file(file_path):
+    serbian_corpus = {}
     with open(file_path, encoding='utf8') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         first_row_passed = False
@@ -43,8 +43,8 @@ def load_text_list_from_csv_file(file_path):
             if not first_row_passed:
                 first_row_passed = True
                 continue
-            text_list.append(row[0])
-    return text_list
+            serbian_corpus[row[0]] = row[1]
+    return serbian_corpus
 
 
 def load_stop_words(dir_path):

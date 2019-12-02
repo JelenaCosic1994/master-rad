@@ -9,6 +9,7 @@ class Text:
             self._sentences.append(Sentence(sentence))
         self._pos_score = None
         self._neg_score = None
+        self._rating = None
 
     def get_sentences(self):
         return self._sentences
@@ -27,6 +28,12 @@ class Text:
 
     def get_neg_score(self):
         return self._neg_score
+
+    def set_rating(self, rating):
+        self._rating = rating
+
+    def get_rating(self):
+        return self._rating
 
     def __str__(self):
         return '\n'.join(str(sentence) for sentence in self._sentences)
