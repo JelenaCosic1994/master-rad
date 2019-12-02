@@ -6,6 +6,7 @@
     - converter.py - contains functions for converting
     - serbian_stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
     - wordnet_helper.py - class for manipulating data from wordnet (english and serbian)
+    - constants.py - contains string constants for rating documents
 - Folder entity:
     - word.py - class for representing word
     - sentence.py - class for representing sentence
