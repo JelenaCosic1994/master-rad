@@ -47,4 +47,3 @@ class Parser:   # TODO: change name
             lemma = self._english_lemmatizer.lemmatize(word.get_data())
             result_words.append(Word(self._english_stemmer.stem(lemma)))
         sentence.set_words(result_words)
-

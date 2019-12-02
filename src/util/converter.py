@@ -1,5 +1,4 @@
 import re
-from src.entity.word import Word
 from transliterate import translit
 
 
@@ -8,10 +7,10 @@ def is_cyrillic_text(text):
 
 
 def convert_word_to_latinic(word):
-    '''
+    """
     :param word: string
     :return: string translated to latinic
-    '''
+    """
     return translit(word, 'sr', reversed=True)
 
 
@@ -42,5 +41,3 @@ def convert_serbian_words_to_aurora(serbian_wn_map):
             str = str.replace("Đ", "dx")
             str = str.replace("Ž", "zx")
             serbian_wn_map[key][i] = str  # TODO check if it works without this line
-
-

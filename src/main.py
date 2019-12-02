@@ -64,10 +64,5 @@ if __name__ == '__main__':
 
     percent_serbian_corpus = get_percent_for_corpus(serbian_corpus, True)
     print(percent_serbian_corpus)
-    # percent_english_corpus = get_percent_for_corpus(english_corpus, False)
-    # print(percent_english_corpus)
-
-# from src.util.serbian_stemmer import stem_str
-# from src.util.serbian_stemmer import stem_arr
-# print(stem_str("Film 'Kum' mi se uopšte ne dopada. Užasno mi je dosadan, dug i nezanimljiv!"))
-# print(stem_arr("Film 'Kum' mi se uopšte ne dopada. Užasno mi je dosadan, dug i nezanimljiv!"))
+    percent_english_corpus = get_percent_for_corpus(english_corpus, False)
+    print(percent_english_corpus)
