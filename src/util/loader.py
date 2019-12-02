@@ -3,6 +3,7 @@ import csv
 import os
 import chardet
 import pandas as pd
+import src.util.constants as const
 
 
 def load_text_from_txt_file(file_path):
@@ -32,6 +33,18 @@ def get_all_txt_file_paths_from_dir(dir_path):
             if '.txt' in file:
                 file_paths.append(os.path.join(r, file))
     return file_paths
+
+
+def load_english_corpus_from_dir(dir_path):
+    all_english_file_paths = get_all_txt_file_paths_from_dir(dir_path)
+    english_corpus = []
+    for file_path in all_english_file_paths:
+        text = load_text_from_txt_file(file_path)
+        if 'pos' in file_path:
+            english_corpus.append((text, const.POSITIVE))
+        if 'neg' in file_path:
+            english_corpus.append((text, const.NEGATIVE))
+    return english_corpus
 
 
 def load_serbian_corpus_from_csv_file(file_path):

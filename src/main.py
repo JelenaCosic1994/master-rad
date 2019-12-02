@@ -14,14 +14,7 @@ if __name__ == '__main__':
     # load Serbian corpus
     serbian_corpus = loader.load_serbian_corpus_from_csv_file("..\\input_data\\SerbMR-3C.csv")
     # load english corpus
-    all_english_file_paths = loader.get_all_txt_file_paths_from_dir("..\\input_data\\txt_sentoken")
-    english_corpus = []
-    for file_path in all_english_file_paths:
-        text = loader.load_text_from_txt_file(file_path)
-        if 'pos' in file_path:
-            english_corpus.append((text, const.POSITIVE))
-        if 'neg' in file_path:
-            english_corpus.append((text, const.NEGATIVE))
+    english_corpus = loader.load_english_corpus_from_dir("..\\input_data\\txt_sentoken")
 
     wordnet_helper = WordNetHelper(data_frame_wnen, "..\\input_data\\wnsrp.xml")
     parser = Parser(stop_words)
