@@ -3,10 +3,10 @@ from src.entity.sentence import Sentence
 
 
 class Text:
-    def __init__(self, text):
+    def __init__(self, text, is_serbian):
         self._sentences = []
         for sentence in nltk.tokenize.sent_tokenize(text):
-            self._sentences.append(Sentence(sentence))
+            self._sentences.append(Sentence(sentence, is_serbian))
         self._pos_score = None
         self._neg_score = None
         self._rating = None

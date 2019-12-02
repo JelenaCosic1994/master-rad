@@ -1,12 +1,16 @@
 import re
 from src.entity.word import Word
+import src.util.converter as converter
 
 
 class Sentence:
-    def __init__(self, sentence):
+    def __init__(self, sentence, is_serbian):
         self._words = []
         for word in re.findall(r'\w+', sentence):
-            self._words.append(Word(word))
+            if is_serbian and converter.is_cyrillic_text(word):
+                self._words.append(Word(converter.convert_word_to_latinic(word)))
+            else:
+                self._words.append(Word(word))
         self._pos_score = None
         self._neg_score = None
 

@@ -7,13 +7,12 @@ def is_cyrillic_text(text):
     return bool(re.search('[а-шА-Ш]', text))
 
 
-def convert_sentence_to_latinic(sentence):
-    words = sentence.get_words()
-    result_words = []
-    for word in words:
-        word = Word(translit(word.get_data(), 'sr', reversed=True))
-        result_words.append(word)
-    sentence.set_words(result_words)
+def convert_word_to_latinic(word):
+    '''
+    :param word: string
+    :return: string translated to latinic
+    '''
+    return translit(word, 'sr', reversed=True)
 
 
 def convert_from_float_to_string(num_float):

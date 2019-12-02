@@ -2,7 +2,6 @@ import src.util.loader as loader
 from src.util.parser import Parser
 from src.entity.text import Text
 from src.util.wordnet_helper import WordNetHelper
-import src.util.converter as converter
 import src.util.constants as const
 
 if __name__ == '__main__':
@@ -24,8 +23,6 @@ if __name__ == '__main__':
         neg_sum = 0
         n = len(text.get_sentences())
         for sentence in text.get_sentences():
-            if is_serbian and converter.is_cyrillic_text(str(sentence)):
-                converter.convert_sentence_to_latinic(sentence)
             parser.remove_stop_words_from_sentence(sentence, is_serbian)
             parser.lemmatization_and_stemming_serbian_sentence(sentence) if is_serbian else parser.lemmatization_and_stemming_english_sentence(sentence)
             wordnet_helper.set_pos_neg_score_for_sentence(sentence, is_serbian)
@@ -54,7 +51,7 @@ if __name__ == '__main__':
         map_size = len(corpus)
 
         for review, rating in corpus:
-            text = Text(review)
+            text = Text(review, is_serbian)
 
             set_pos_neg_score_for_document(text, is_serbian)
             set_rating_to_document(text)
