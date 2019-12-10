@@ -26,18 +26,16 @@ def convert_from_float_to_string(num_float):
         return -1  # TODO check if this is correct
 
 
-def convert_serbian_words_to_aurora(serbian_wn_map):
-    for key in serbian_wn_map.keys():
-        for i in range(len(serbian_wn_map[key])):
-            str = serbian_wn_map[key][i]
-            str = str.replace("š", "sx")
-            str = str.replace("č", "cx")
-            str = str.replace("ć", "cy")
-            str = str.replace("đ", "dx")
-            str = str.replace("ž", "zx")
-            str = str.replace("Š", "sx")
-            str = str.replace("Č", "cx")
-            str = str.replace("Ć", "cy")
-            str = str.replace("Đ", "dx")
-            str = str.replace("Ž", "zx")
-            serbian_wn_map[key][i] = str  # TODO check if it works without this line
+def convert_serbian_word_to_aurora(word):
+	str = word
+	str = str.replace("š", "sx")
+	str = str.replace("č", "cx")
+	str = str.replace("ć", "cy")
+	str = str.replace("đ", "dx")
+	str = str.replace("ž", "zx")
+	str = str.replace("Š", "sx")
+	str = str.replace("Č", "cx")
+	str = str.replace("Ć", "cy")
+	str = str.replace("Đ", "dx")
+	str = str.replace("Ž", "zx")
+	return str

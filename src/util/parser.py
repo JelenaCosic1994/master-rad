@@ -45,5 +45,5 @@ class Parser:   # TODO: change name
         result_words = []
         for word in words:
             lemma = self._english_lemmatizer.lemmatize(word.get_data())
-            result_words.append(Word(self._english_stemmer.stem(lemma)))
+            result_words.append(Word(lemma))
         sentence.set_words(result_words)
