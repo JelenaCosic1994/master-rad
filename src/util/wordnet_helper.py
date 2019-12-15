@@ -6,11 +6,14 @@ import pandas as pd
 class WordNetHelper:
 
     def __init__(self, english_wordnet, serbian_wordnet_path):
-        self._map_id_and_pos_neg_score = {}
-        self._map_serbian_wordnet = {}
+        self._map_id_and_pos_neg_score = {}  # id : list(pos, neg score)  much bigger than _map_serbian_wordnet
+        self._map_serbian_wordnet = {}  # id : tuple(words)
 
         self._create_map_serbian_wordnet(serbian_wordnet_path)
         self._create_map_id_and_pos_neg_score(english_wordnet['ID'], english_wordnet['PosScore'], english_wordnet['NegScore'])
+
+        self._data_frame_wordnet = self._create_data_frame()
+        print(self._data_frame_wordnet)
 
     def _create_map_id_and_pos_neg_score(self, id_in_wnen, pos_scores_in_wnen, neg_scores_in_wnen):
         for i in range(len(id_in_wnen)):
@@ -29,19 +32,22 @@ class WordNetHelper:
                     list_literal.append(converter.convert_serbian_word_to_aurora(literal.text))
                 self._map_serbian_wordnet[id_] = tuple(list_literal)
 
-    # def create_data_frame(self):
-    #     score = {}
-    #     literals = {}
-    #     for id_ in self._map_serbian_wordnet:
-    #         if id_ in self._map_id_and_pos_neg_score:
-    #             score[id_] = self._map_id_and_pos_neg_score[id_]
-    #             literals[id_] = self._map_serbian_wordnet[id_]
-    #
-    #     data = {"id": score.keys(),
-    #             "score": score.values(),
-    #             "literali": literals.values()}
-    #
-    #     return pd.DataFrame(data)
+    def _create_data_frame(self):
+        ids = []
+        scores = []
+        literals = []
+
+        for id_ in self._map_serbian_wordnet:
+            if id_ in self._map_id_and_pos_neg_score:
+                ids.append(id_)
+                scores.append(self._map_id_and_pos_neg_score[id_])
+                literals.append(self._map_serbian_wordnet[id_])
+
+        data = {"id": ids,
+                "score": scores,
+                "literals": literals}
+
+        return pd.DataFrame(data)
 
     def find_all_ids_for_word_in_serbian_wordnet(self, word_data):
         list_of_ids = []
