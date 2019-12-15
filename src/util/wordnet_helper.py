@@ -1,6 +1,5 @@
 import src.util.converter as converter
 import xml.etree.ElementTree as et
-import pandas as pd
 
 
 class WordNetHelper:
@@ -46,19 +45,20 @@ class WordNetHelper:
                 "score": scores,
                 "literals": literals}
 
-        return pd.DataFrame(data)
+        return data
 
     def get_pos_neg_score_for_serbian_word(self, word):
 
         pos_scores = []
         neg_scores = []
 
-        for i in range(len(self._data_frame_wordnet)):
-            literals = self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'literals']
+        for i in range(len(self._data_frame_wordnet["id"])):
+            literals = self._data_frame_wordnet["literals"][i]
             for literal in literals:
                 if word in literal:
-                    pos_scores.append(self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'score'][0])
-                    neg_scores.append(self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'score'][1])
+                    score = self._data_frame_wordnet["score"][i]
+                    pos_scores.append(score[0])
+                    neg_scores.append(score[1])
                     break
         if len(pos_scores) > 0:
             return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores)
