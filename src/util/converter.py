@@ -1,5 +1,6 @@
 import re
 from transliterate import translit
+from nltk.tokenize.punkt import PunktSentenceTokenizer
 
 
 def is_cyrillic_text(text):
@@ -39,3 +40,17 @@ def convert_serbian_word_to_aurora(word):
 	str = str.replace("Đ", "dx")
 	str = str.replace("Ž", "zx")
 	return str
+
+
+def split_text_to_sentences(text):
+    tokenizer = PunktSentenceTokenizer()
+
+    tokenizer._params.abbrev_types.add('mr')
+    tokenizer._params.abbrev_types.add('dr')
+    tokenizer._params.abbrev_types.add('td')
+    tokenizer._params.abbrev_types.add('tj')
+
+    text = text.replace('...', '.')
+    text = text.replace('.)', ')')
+    clean_sentences = tokenizer.tokenize(text)
+    return clean_sentences

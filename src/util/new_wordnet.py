@@ -3,6 +3,7 @@ from nltk.corpus import wordnet as wn
 from nltk.corpus import sentiwordnet as swn
 from nltk import sent_tokenize, word_tokenize, pos_tag
 import src.util.loader as loader
+
 lemmatizer = WordNetLemmatizer()
 
 
