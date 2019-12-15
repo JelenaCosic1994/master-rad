@@ -13,7 +13,6 @@ class WordNetHelper:
         self._create_map_id_and_pos_neg_score(english_wordnet['ID'], english_wordnet['PosScore'], english_wordnet['NegScore'])
 
         self._data_frame_wordnet = self._create_data_frame()
-        print(self._data_frame_wordnet)
 
     def _create_map_id_and_pos_neg_score(self, id_in_wnen, pos_scores_in_wnen, neg_scores_in_wnen):
         for i in range(len(id_in_wnen)):
@@ -49,31 +48,19 @@ class WordNetHelper:
 
         return pd.DataFrame(data)
 
-    def find_all_ids_for_word_in_serbian_wordnet(self, word_data):
-        list_of_ids = []
-        for key in self._map_serbian_wordnet.keys():
-            for value in self._map_serbian_wordnet[key]:
-                if word_data in value:
-                    list_of_ids.append(key)
-                    break
-        return list_of_ids
-
     def get_pos_neg_score_for_serbian_word(self, word):
-        if not self.find_all_ids_for_word_in_serbian_wordnet(word):
+
+        pos_scores = []
+        neg_scores = []
+
+        for i in range(len(self._data_frame_wordnet)):
+            literals = self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'literals']
+            for literal in literals:
+                if word in literal:
+                    pos_scores.append(self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'score'][0])
+                    neg_scores.append(self._data_frame_wordnet.at[self._data_frame_wordnet.index[i], 'score'][1])
+                    break
+        if len(pos_scores) > 0:
+            return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores)
+        else:
             return 0, 0
-
-        list_of_ids = self.find_all_ids_for_word_in_serbian_wordnet(word)
-        count = 0
-        pos_sum = 0
-        neg_sum = 0
-
-        for id_ in list_of_ids:
-            if id_ in self._map_id_and_pos_neg_score:
-                p = self._map_id_and_pos_neg_score[id_][0]
-                n = self._map_id_and_pos_neg_score[id_][1]
-                if p != n:
-                    pos_sum += p
-                    neg_sum += n
-                    count += 1
-        pos, neg = (pos_sum / count, neg_sum / count) if count != 0 else (0, 0)
-        return pos, neg
