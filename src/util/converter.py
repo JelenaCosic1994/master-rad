@@ -1,4 +1,4 @@
-import re
+import re, string
 from transliterate import translit
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 
@@ -54,3 +54,11 @@ def split_text_to_sentences(text):
     text = text.replace('.)', ')')
     clean_sentences = tokenizer.tokenize(text)
     return clean_sentences
+
+
+def remove_punctuation(text):
+    replacer = str.maketrans(dict.fromkeys(string.punctuation))
+    text_1 = text.translate(replacer)
+    text_2 = re.sub(r'[^\w\s]', '', text_1)
+
+    return text_2

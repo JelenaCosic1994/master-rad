@@ -5,9 +5,12 @@ import xml.etree.ElementTree as et
 class WordNetHelper:
 
     def __init__(self, english_wordnet, serbian_wordnet_path):
-        map_serbian_wordnet = self._create_map_serbian_wordnet(serbian_wordnet_path)
+        map_serbian_wordnet = self._create_map_serbian_wordnet(serbian_wordnet_path)  # id and list of literals
         map_id_and_pos_neg_score = self._create_map_id_and_pos_neg_score(english_wordnet['ID'], english_wordnet['PosScore'], english_wordnet['NegScore'])
-        self._wordnet_data = self._create_wordnet_data(map_serbian_wordnet, map_id_and_pos_neg_score)
+        wordnet_map = open("..\\input_data\\wordnet_map.txt", "w", encoding='utf8')
+        self._wordnet_data = self._create_wordnet_data(map_serbian_wordnet, map_id_and_pos_neg_score)   # id, score, literals
+        wordnet_map.write(str(self._wordnet_data))
+        wordnet_map.close()
 
     @staticmethod
     def _create_map_id_and_pos_neg_score(id_in_wnen, pos_scores_in_wnen, neg_scores_in_wnen):
@@ -28,7 +31,8 @@ class WordNetHelper:
                 id_ = synset.find('ID').text[6:14]   # save only id number without other text
                 list_literal = []
                 for literal in synonym.findall('LITERAL'):
-                    list_literal.append(converter.convert_serbian_word_to_aurora(literal.text))
+                    lit_aurora = converter.convert_serbian_word_to_aurora(literal.text)
+                    list_literal.append(lit_aurora.lower())
                 map_serbian_wordnet[id_] = tuple(list_literal)
         return map_serbian_wordnet
 
@@ -50,16 +54,17 @@ class WordNetHelper:
 
         return data
 
-    def get_pos_neg_score_for_serbian_word(self, word):
+    def get_pos_neg_score_for_serbian_word(self, word123, file):
         pos_scores = []
         neg_scores = []
 
         for i in range(len(self._wordnet_data["id"])):
             literals = self._wordnet_data["literals"][i]
             for literal in literals:
-                if word in literal:
+                if literal.startswith(word123):
                     score = self._wordnet_data["score"][i]
-                    if score[0] != score[1]:
+                    file.write("\nSENTIMENT: " + "positive: " + str(score[0]) + ", negative: " + str(score[1]) + "\n")
+                    if score[0] != score[1] or score[0] != 0:
                         pos_scores.append(score[0])
                         neg_scores.append(score[1])
                         break

@@ -2,9 +2,13 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 from nltk.corpus import sentiwordnet as swn
 from nltk import sent_tokenize, word_tokenize, pos_tag
+from nltk.corpus import stopwords
 import src.util.loader as loader
+import src.util.constants as const
+import src.util.converter as converter
 
 lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english'))
 
 
 def penn_to_wn(tag):
@@ -22,7 +26,7 @@ def penn_to_wn(tag):
     return None
 
 
-def swn_polarity(text: str) -> str:
+def swn_polarity(text: str, file) -> str:
     """
     Return a sentiment polarity: negative or positive for given text
     :param text: string which represent text
@@ -44,6 +48,9 @@ def swn_polarity(text: str) -> str:
             if wn_tag not in (wn.NOUN, wn.ADJ, wn.ADV):
                 continue
 
+            if word in stop_words:
+                continue
+
             lemma = lemmatizer.lemmatize(word, pos=wn_tag)
             if not lemma:
                 continue
@@ -52,57 +59,72 @@ def swn_polarity(text: str) -> str:
             if not synsets:
                 continue
 
+            file.write("WORD " + word + "\t")
+            file.write("FIRST SYNSET FOR WORD: " + str(synsets[0].name))
             swn_synset = swn.senti_synset(synsets[0].name())
             pos = swn_synset.pos_score()
             neg = swn_synset.neg_score()
-            if pos != neg:
+            file.write("\nSENTIMENT: " + "positive: " + str(pos) + ", negative: " + str(neg) + "\n")
+
+            if pos != neg or pos != 0:
                 pos_score_sentence += pos
                 neg_score_sentence += neg
                 count_words += 1
 
         pos_avg_sentence, neg_avg_sentence = (pos_score_sentence / count_words, neg_score_sentence / count_words) if count_words != 0 else (0, 0)
-        if pos_avg_sentence != neg_avg_sentence:
+        if pos_avg_sentence != neg_avg_sentence or pos_avg_sentence != 0:
             pos_score_text += pos_avg_sentence
             neg_score_text += neg_avg_sentence
             count_sentences += 1
 
     pos_avg_text, neg_avg_text = (pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
     if pos_avg_text > neg_avg_text:
-        return 'POSITIVE'
+        return const.POSITIVE
     else:
-        return 'NEGATIVE'
+        return const.NEGATIVE
 
 
 def calc_percent_for_corpus(english_corpus: list) -> tuple:
     """
-    For given corpus calculate precision and recall for positive and negative reviews
+    For given corpus calculate tp, tn, fp, fn
     :param english_corpus: 
-    :return: tuple (precision_p, precision_n, recall_p, recall_n)
+    :return:
     """
-    true_positive_p = 0
-    true_positive_n = 0
-    all_positive = 0
-    all_negative = 0
-    map_size = len(english_corpus)
+    tp = 0
+    fp = 0
+    tn = 0
+    fn = 0
+    i = 1
+    for t, rating in english_corpus:
+        text = converter.remove_punctuation(t)
+        file = open("..\\..\\output_data\\english_corpus\\" + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
+        i += 1
 
-    for text, rating in english_corpus:
-        new_r = swn_polarity(text)
+        new_r = swn_polarity(text, file)
+        file.write("\nNew Rating: " + new_r)
+        file.close()
 
-        if new_r == 'POSITIVE':
-            all_positive += 1
-        if new_r == 'NEGATIVE':
-            all_negative += 1
+        if rating == const.POSITIVE:
+            if new_r == const.POSITIVE:
+                tp += 1
+            if new_r == const.NEGATIVE:
+                fn += 1
+        if rating == const.NEGATIVE:
+            if new_r == const.POSITIVE:
+                fp += 1
+            if new_r == const.NEGATIVE:
+                tn += 1
 
-        if new_r == rating:
-            if rating == 'POSITIVE':
-                true_positive_p += 1
-            if rating == 'NEGATIVE':
-                true_positive_n += 1
-
-    return true_positive_p/all_positive * 100, true_positive_n/all_negative * 100, 2*true_positive_p / map_size * 100, 2*true_positive_n / map_size * 100
-
+    return tp, tn, fp, fn
 
 english_corpus = loader.load_english_corpus_from_dir("..\\..\\input_data\\txt_sentoken - all items")
-precision_p, precision_n, recall_p, recall_n = calc_percent_for_corpus(english_corpus)
-print("Precision for positive: " + str(precision_p) + ", recall for positive: " + str(recall_p) + ", f measure: " + str( 2*(precision_p*recall_p)/(precision_p + recall_p)) + "\n")
-print("Precision for negative: " + str(precision_n) + ", recall for negative: " + str(recall_n) + ", f measure: " + str( 2*(precision_n*recall_n)/(precision_n + recall_n)) + "\n")
+precision_recall_file = open("..\\..\\output_data\\english_corpus\\precision_recall.txt", "w", encoding='utf8')
+
+tp, tn, fp, fn = calc_percent_for_corpus(english_corpus)
+precision = tp/(tp + fp)*100
+recall = tp/(tp + fn)*100
+f_measure = 2*precision*recall/(precision + recall)
+
+print("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure))
+precision_recall_file.write("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure))
+precision_recall_file.close()

@@ -13,86 +13,98 @@ if __name__ == '__main__':
     # load english WordNet
     data_frame_wnen = loader.load_xlsx_file("..\\input_data\\wnen.xlsx")
     # load Serbian corpus
-    serbian_corpus = loader.load_serbian_corpus_from_csv_file("..\\input_data\\serb-5.csv")
-    # load english corpus
-    # english_corpus = loader.load_english_corpus_from_dir("..\\input_data\\txt_sentoken_100")
+    serbian_corpus = loader.load_serbian_corpus_from_csv_file("..\\input_data\\serb-all-2.csv")
 
     wordnet_helper = WordNetHelper(data_frame_wnen, "..\\input_data\\wnsrp.xml")
 
-    # print(wordnet_helper.create_data_frame())
 
-def swn_polarity(text):
-    raw_sentences = converter.split_text_to_sentences(text)
-    count_sentences = 0
-    pos_score_text = 0
-    neg_score_text = 0
+    def swn_polarity(text, file):
+        raw_sentences = converter.split_text_to_sentences(text)
+        count_sentences = 0
+        pos_score_text = 0
+        neg_score_text = 0
 
-    for sentence in raw_sentences:
-        pos_sum_sen = 0
-        neg_sum_sen = 0
-        count_words = 0
-        for word in word_tokenize(sentence):
-            word = word.lower().strip()
-            # if is word in cyrillic convert to latinic
-            if converter.is_cyrillic_text(word):
-                word = converter.convert_word_to_latinic(word)
+        for sentence in raw_sentences:
+            pos_sum_sen = 0
+            neg_sum_sen = 0
+            count_words = 0
+            for w in word_tokenize(sentence):
+                # convert word to lowercase and delete spaces
+                word = w.lower().strip()
 
-            # ignore stop words
-            if word in stop_words:
-                continue
+                # if is word in cyrillic convert to latinic
+                if converter.is_cyrillic_text(word):
+                    word = converter.convert_word_to_latinic(word)
 
-            # stemming
-            stem_word = serbian_stemmer.stem_str(word)
+                # ignore stop words
+                if word in stop_words:
+                    continue
 
-            # pos and neg score
-            p, n = wordnet_helper.get_pos_neg_score_for_serbian_word(stem_word)
-            if p != n:
-                pos_sum_sen += p
-                neg_sum_sen += n
-                count_words += 1
+                # stemming
+                stem_word = serbian_stemmer.stem_str(word)
 
-        pos_avg_sentence, neg_avg_sentence = (pos_sum_sen / count_words, neg_sum_sen / count_words) if count_words != 0 else (0, 0)
-        if pos_avg_sentence != neg_avg_sentence:
-            pos_score_text += pos_avg_sentence
-            neg_score_text += neg_avg_sentence
-            count_sentences += 1
+                file.write("WORD " + word + "\t")
+                file.write("STEM WORD: " + stem_word + "\n")
+                # pos and neg score from english wordnet
+                p, n = wordnet_helper.get_pos_neg_score_for_serbian_word(stem_word.strip(), file)
 
-    pos_avg_text, neg_avg_text = (pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
-    if pos_avg_text > neg_avg_text:
-        return 'POSITIVE'
-    else:
-        return 'NEGATIVE'
+                if p != n or p != 0:
+                    pos_sum_sen += p
+                    neg_sum_sen += n
+                    count_words += 1
 
+            pos_avg_sentence, neg_avg_sentence = (pos_sum_sen / count_words, neg_sum_sen / count_words) if count_words != 0 else (0, 0)
+            if pos_avg_sentence != neg_avg_sentence or pos_avg_sentence != 0:
+                pos_score_text += pos_avg_sentence
+                neg_score_text += neg_avg_sentence
+                count_sentences += 1
 
-def calc_percent_for_corpus(english_corpus: list) -> tuple:
-    """
-    For given corpus calculate precision and recall for positive and negative reviews
-    :param english_corpus:
-    :return: tuple (precision_p, precision_n, recall_p, recall_n)
-    """
-    true_positive_p = 0
-    true_positive_n = 0
-    all_positive = 0
-    all_negative = 0
-    map_size = len(english_corpus)
-
-    for text, rating in english_corpus:
-        new_r = swn_polarity(text)
-
-        if new_r == 'POSITIVE':
-            all_positive += 1
-        if new_r == 'NEGATIVE':
-            all_negative += 1
-
-        if new_r == rating:
-            if rating == 'POSITIVE':
-                true_positive_p += 1
-            if rating == 'NEGATIVE':
-                true_positive_n += 1
-
-    return true_positive_p / all_positive * 100, true_positive_n / all_negative * 100, 2 * true_positive_p / map_size * 100, 2 * true_positive_n / map_size * 100
+        pos_avg_text, neg_avg_text = (pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
+        if pos_avg_text > neg_avg_text:
+            return const.POSITIVE
+        else:
+            return const.NEGATIVE
 
 
-precision_p, precision_n, recall_p, recall_n = calc_percent_for_corpus(serbian_corpus)
-print("Precision for positive: " + str(precision_p) + ", recall for positive: " + str(recall_p) + ", f measure: " + str(2 * (precision_p * recall_p) / (precision_p + recall_p)) + "\n")
-print("Precision for negative: " + str(precision_n) + ", recall for negative: " + str(recall_n) + ", f measure: " + str(2 * (precision_n * recall_n) / (precision_n + recall_n)) + "\n")
+    def calc_percent_for_corpus(serbian_corpus: list) -> tuple:
+        """
+        For given corpus calculate tp,tn,fp,fn
+        :param english_corpus:
+        :return:
+        """
+        tp = 0
+        fp = 0
+        tn = 0
+        fn = 0
+        i = 1
+        for t, rating in serbian_corpus:
+            text = converter.remove_punctuation(t)
+            file = open("..\\output_data\\serbian_corpus\\" + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
+            i += 1
+
+            new_r = swn_polarity(text, file)
+            file.write("\nNew Rating: " + new_r)
+            file.close()
+
+            if rating == const.POSITIVE:
+                if new_r == const.POSITIVE:
+                    tp += 1
+                if new_r == const.NEGATIVE:
+                    fn += 1
+            if rating == const.NEGATIVE:
+                if new_r == const.POSITIVE:
+                    fp += 1
+                if new_r == const.NEGATIVE:
+                    tn += 1
+
+        return tp, tn, fp, fn
+
+    tp, tn, fp, fn = calc_percent_for_corpus(serbian_corpus)
+    precision = tp / (tp + fp) * 100
+    recall = tp / (tp + fn) * 100
+    f_measure = 2*precision*recall/(precision + recall)
+
+    precision_recall_file = open("..\\output_data\\serbian_corpus\\precision_recall.txt", "w", encoding='utf8')
+    print("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure))
+    precision_recall_file.write("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure))
+    precision_recall_file.close()
