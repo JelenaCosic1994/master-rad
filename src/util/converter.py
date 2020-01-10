@@ -1,21 +1,35 @@
-import re, string
+import re
+import string
 from transliterate import translit
 from nltk.tokenize.punkt import PunktSentenceTokenizer
+from nltk.corpus import wordnet as wn
 
 
 def is_cyrillic_text(text):
+    """
+    Function for recognizing cyrillic serbian text
+    :param text: some string
+    :return: True if text is in cyrillic serbian language or False otherwise
+    """
     return bool(re.search('[а-шА-Ш]', text))
 
 
 def convert_word_to_latinic(word):
     """
-    :param word: string
-    :return: string translated to latinic
+    Function for converting cyrillic serbian word to latinic serbian word
+    :param word: string which represents cyrillic serbian word
+    :return: string translated to latinic serbian word
     """
     return translit(word, 'sr', reversed=True)
 
 
 def convert_from_float_to_string(num_float):
+    """
+    Function for converting float number to string and concatenating zeros in begin of string
+    if string has lenght smaller than 8 characters
+    :param num_float: floar number
+    :return: string number
+    """
     try:
         int_num = int(num_float)
         num_string = str(int_num)
@@ -28,21 +42,31 @@ def convert_from_float_to_string(num_float):
 
 
 def convert_serbian_word_to_aurora(word):
-	str = word
-	str = str.replace("š", "sx")
-	str = str.replace("č", "cx")
-	str = str.replace("ć", "cy")
-	str = str.replace("đ", "dx")
-	str = str.replace("ž", "zx")
-	str = str.replace("Š", "sx")
-	str = str.replace("Č", "cx")
-	str = str.replace("Ć", "cy")
-	str = str.replace("Đ", "dx")
-	str = str.replace("Ž", "zx")
-	return str
+    """
+    Function for converting serbian word to aurora
+    :param word: serbian word in latinic
+    :return: serbian word in aurora
+    """
+    aurora_str = word
+    aurora_str = aurora_str.replace("š", "sx")
+    aurora_str = aurora_str.replace("č", "cx")
+    aurora_str = aurora_str.replace("ć", "cy")
+    aurora_str = aurora_str.replace("đ", "dx")
+    aurora_str = aurora_str.replace("ž", "zx")
+    aurora_str = aurora_str.replace("Š", "sx")
+    aurora_str = aurora_str.replace("Č", "cx")
+    aurora_str = aurora_str.replace("Ć", "cy")
+    aurora_str = aurora_str.replace("Đ", "dx")
+    aurora_str = aurora_str.replace("Ž", "zx")
+    return aurora_str
 
 
 def split_text_to_sentences(text):
+    """
+    Function for split text into sentences
+    :param text: string which represents some text
+    :return: list of large string
+    """
     tokenizer = PunktSentenceTokenizer()
 
     tokenizer._params.abbrev_types.add('mr')
@@ -56,9 +80,35 @@ def split_text_to_sentences(text):
     return clean_sentences
 
 
+def penn_to_wn(tag):
+    """
+    Function for convert between the PennTreebank tags to simple Wordnet tags
+    :param tag: result of pos_tag method
+    :return: Wordnet tag
+    """
+    if tag.startswith('J'):
+        return wn.ADJ
+    elif tag.startswith('N'):
+        return wn.NOUN
+    elif tag.startswith('R'):
+        return wn.ADV
+    elif tag.startswith('V'):
+        return wn.VERB
+    return None
+
+
+"""
+@author: Marija Radovic
+"""
+
+
 def remove_punctuation(text):
+    """
+    Function for remove punctuation in text
+    :param text: string which represents some text
+    :return: string without punctuation
+    """
     replacer = str.maketrans(dict.fromkeys(string.punctuation))
     text_1 = text.translate(replacer)
-    text_2 = re.sub(r'[^\w\s]', '', text_1)
-
-    return text_2
+    clean_text = re.sub(r'[^\w\s]', '', text_1)
+    return clean_text

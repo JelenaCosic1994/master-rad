@@ -4,18 +4,20 @@ import src.util.constants as const
 from nltk import word_tokenize
 import src.util.converter as converter
 import src.util.serbian_stemmer as serbian_stemmer
-
+import os
 
 if __name__ == '__main__':
 
     # load stop words
-    stop_words = loader.load_stop_words("..\\input_data\\StopWords")
+    stop_words = loader.load_stop_words(".." + os.sep + "input_data" + os.sep + "StopWords")
     # load english WordNet
-    data_frame_wnen = loader.load_xlsx_file("..\\input_data\\wnen.xlsx")
-    # load Serbian corpus
-    serbian_corpus = loader.load_serbian_corpus_from_csv_file("..\\input_data\\serb-all-2.csv")
+    english_wordnet = loader.load_xlsx_file(".." + os.sep + "input_data" + os.sep + "wnen.xlsx")
+    # load Serbian corpus - 2 classes
+    serbian_corpus_2_classes = loader.load_serbian_corpus(".." + os.sep + "input_data" + os.sep + "serb-all-2.csv")
+    # load english corpus - 2 classes
+    english_corpus = loader.load_english_corpus(".." + os.sep + "input_data" + os.sep + "txt_sentoken - all items")
 
-    wordnet_helper = WordNetHelper(data_frame_wnen, "..\\input_data\\wnsrp.xml")
+    wordnet_helper = WordNetHelper(english_wordnet, ".." + os.sep + "input_data" + os.sep + "wnsrp.xml")
 
 
     def swn_polarity(text, file):

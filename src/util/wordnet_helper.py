@@ -7,13 +7,18 @@ class WordNetHelper:
     def __init__(self, english_wordnet, serbian_wordnet_path):
         map_serbian_wordnet = self._create_map_serbian_wordnet(serbian_wordnet_path)  # id and list of literals
         map_id_and_pos_neg_score = self._create_map_id_and_pos_neg_score(english_wordnet['ID'], english_wordnet['PosScore'], english_wordnet['NegScore'])
-        wordnet_map = open("..\\input_data\\wordnet_map.txt", "w", encoding='utf8')
         self._wordnet_data = self._create_wordnet_data(map_serbian_wordnet, map_id_and_pos_neg_score)   # id, score, literals
-        wordnet_map.write(str(self._wordnet_data))
-        wordnet_map.close()
 
     @staticmethod
     def _create_map_id_and_pos_neg_score(id_in_wnen, pos_scores_in_wnen, neg_scores_in_wnen):
+        """
+        Function for creating map for english wordnet data
+        :param id_in_wnen: column of ids in english wordnet data frame
+        :param pos_scores_in_wnen: column of positive scores in english wordnet data frame
+        :param neg_scores_in_wnen: column of negative scores in english wordnet data frame
+        :return: map - key: id for synset = string number which length is 8 chars
+                       value: list which elements are positive and negative score for id in synset
+        """
         map_id_and_pos_neg_score = {}
         for i in range(len(id_in_wnen)):
             br_str = converter.convert_from_float_to_string(id_in_wnen[i])
@@ -21,9 +26,15 @@ class WordNetHelper:
         return map_id_and_pos_neg_score
 
     @staticmethod
-    def _create_map_serbian_wordnet(xml_doc_path):
+    def _create_map_serbian_wordnet(serbian_wordnet_path):
+        """
+        Function for creating map for serbian wordnet data
+        :param serbian_wordnet_path: path to the serbian wordnet file
+        :return: map - key: id for synset = string number which length is 8 chars,
+                       value: tuple of literals in synset
+        """
         map_serbian_wordnet = {}
-        xml_doc = et.parse(xml_doc_path)
+        xml_doc = et.parse(serbian_wordnet_path)
         root = xml_doc.getroot()
         for synset in root.findall('SYNSET'):
             synonym = synset.find('SYNONYM')
@@ -38,6 +49,12 @@ class WordNetHelper:
 
     @staticmethod
     def _create_wordnet_data(map_serbian_wordnet, map_id_and_pos_neg_score):
+        """
+        Function for creating one map from serbian and english wordnet maps
+        :param map_serbian_wordnet: map for serbian wordnet
+        :param map_id_and_pos_neg_score: map for english wordnet
+        :return: data with columns id, score and literals from both maps - this is map intersection
+        """
         ids = []
         scores = []
         literals = []
@@ -54,14 +71,20 @@ class WordNetHelper:
 
         return data
 
-    def get_pos_neg_score_for_serbian_word(self, word123, file):
+    def get_pos_neg_score_for_serbian_word(self, word, file):
+        """
+        Function for calculating positive and negative score for serbian word
+        :param word: input word
+        :param file: file for writing results
+        :return: positive and negative score
+        """
         pos_scores = []
         neg_scores = []
 
         for i in range(len(self._wordnet_data["id"])):
             literals = self._wordnet_data["literals"][i]
             for literal in literals:
-                if literal.startswith(word123):
+                if literal.startswith(word):
                     score = self._wordnet_data["score"][i]
                     file.write("\nSENTIMENT: " + "positive: " + str(score[0]) + ", negative: " + str(score[1]) + "\n")
                     if score[0] != score[1] or score[0] != 0:

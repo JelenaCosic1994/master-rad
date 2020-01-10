@@ -11,27 +11,13 @@ lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 
 
-def penn_to_wn(tag):
+def swn_polarity(text, file):
     """
-    Convert between the PennTreebank tags to simple Wordnet tags
+    Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
+    :param text: string which represents text - film review
+    :param file: file to write results
+    :return: sentiment polarity for given text
     """
-    if tag.startswith('J'):
-        return wn.ADJ
-    elif tag.startswith('N'):
-        return wn.NOUN
-    elif tag.startswith('R'):
-        return wn.ADV
-    elif tag.startswith('V'):
-        return wn.VERB
-    return None
-
-
-def swn_polarity(text: str, file) -> str:
-    """
-    Return a sentiment polarity: negative or positive for given text
-    :param text: string which represent text
-    """
-
     raw_sentences = sent_tokenize(text)
     count_sentences = 0
     pos_score_text = 0
@@ -44,7 +30,7 @@ def swn_polarity(text: str, file) -> str:
         neg_score_sentence = 0
         for word, tag in tagged_sentence:
 
-            wn_tag = penn_to_wn(tag)
+            wn_tag = converter.penn_to_wn(tag)
             if wn_tag not in (wn.NOUN, wn.ADJ, wn.ADV):
                 continue
 
@@ -78,13 +64,14 @@ def swn_polarity(text: str, file) -> str:
             count_sentences += 1
 
     pos_avg_text, neg_avg_text = (pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
+    #TODO: suprotan slucaj proveriti kakve rezultate daje!!
     if pos_avg_text > neg_avg_text:
         return const.POSITIVE
     else:
         return const.NEGATIVE
 
 
-def calc_percent_for_corpus(english_corpus: list) -> tuple:
+def calc_percent_for_corpus(english_corpus):
     """
     For given corpus calculate tp, tn, fp, fn
     :param english_corpus: 
@@ -97,6 +84,7 @@ def calc_percent_for_corpus(english_corpus: list) -> tuple:
     i = 1
     for t, rating in english_corpus:
         text = converter.remove_punctuation(t)
+        #TODO: remove \\ and add slashes for Windows and Linux!!!!
         file = open("..\\..\\output_data\\english_corpus\\" + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
         i += 1
 
@@ -117,10 +105,13 @@ def calc_percent_for_corpus(english_corpus: list) -> tuple:
 
     return tp, tn, fp, fn
 
-english_corpus = loader.load_english_corpus_from_dir("..\\..\\input_data\\txt_sentoken - all items")
+
+
+english_corpus = loader.load_english_corpus("..\\..\\input_data\\txt_sentoken - all items")
 precision_recall_file = open("..\\..\\output_data\\english_corpus\\precision_recall.txt", "w", encoding='utf8')
 
 tp, tn, fp, fn = calc_percent_for_corpus(english_corpus)
+#TODO: calculate accuracy also!!
 precision = tp/(tp + fp)*100
 recall = tp/(tp + fn)*100
 f_measure = 2*precision*recall/(precision + recall)
