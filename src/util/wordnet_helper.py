@@ -1,13 +1,13 @@
 import src.util.converter as converter
-import xml.etree.ElementTree as et
+import src.util.serbian_stemmer as serbian_stemmer
+import src.util.constants as const
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 from nltk.corpus import sentiwordnet as swn
-from nltk import sent_tokenize, word_tokenize, pos_tag
 from nltk.corpus import stopwords
-import src.util.constants as const
+from nltk import sent_tokenize, word_tokenize, pos_tag
 import os
-import src.util.serbian_stemmer as serbian_stemmer
+import xml.etree.ElementTree as et
 
 
 class WordNetHelper:
@@ -107,12 +107,13 @@ class WordNetHelper:
         else:
             return 0, 0
 
-    def swn_polarity(self, text, file, is_english):
+    def swn_polarity(self, text, file, is_english, tree_classes):
         """
         Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
         :param text: string which represents text - film review
         :param file: file to write results
         :param is_english: param for recognizing language
+        :param tree_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
         :return: sentiment polarity for given text
         """
 
@@ -145,11 +146,21 @@ class WordNetHelper:
         pos_avg_text, neg_avg_text = (
         pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
 
-        # TODO: suprotan slucaj proveriti kakve rezultate daje!!
-        if pos_avg_text > neg_avg_text:
-            return const.POSITIVE
+        file.write("\n score for text: positive - " + str(pos_avg_text) + " , negative - " + str(neg_avg_text) + " i razlika: " + str(pos_avg_text-neg_avg_text) + "\n")
+
+        treshold_value = 0.05
+        if tree_classes:
+            if abs(pos_avg_text - neg_avg_text) <= treshold_value:
+                return const.NEUTRAL
+            if (pos_avg_text - neg_avg_text) > treshold_value:
+                return const.POSITIVE
+            if (neg_avg_text - pos_avg_text) > treshold_value:
+                return const.NEGATIVE
         else:
-            return const.NEGATIVE
+            if pos_avg_text > neg_avg_text:
+                return const.POSITIVE
+            else:
+                return const.NEGATIVE
 
     def _get_score_for_english_raw_sentence(self, raw_sentence, file):
         """
@@ -161,6 +172,8 @@ class WordNetHelper:
         count_words = 0
         pos_score_sentence = 0
         neg_score_sentence = 0
+
+        par = 1
 
         tagged_sentence = pos_tag(word_tokenize(raw_sentence))
 
@@ -196,9 +209,10 @@ class WordNetHelper:
             file.write("\nSENTIMENT: " + "positive: " + str(pos) + ", negative: " + str(neg) + "\n")
 
             if pos != neg or pos != 0:
-                pos_score_sentence += pos
-                neg_score_sentence += neg
+                pos_score_sentence += pos*par
+                neg_score_sentence += neg*par
                 count_words += 1
+                par += 1
 
         return pos_score_sentence, neg_score_sentence, count_words
 
@@ -241,11 +255,12 @@ class WordNetHelper:
 
         return pos_score_sentence, neg_score_sentence, count_words
 
-    def calc_percents_for_corpus(self, corpus, is_english):
+    def calc_percents_for_corpus(self, corpus, is_english, tree_classes):
         """
         Function for calculating precision, recall, f measure and accuracy for given corpus
         :param corpus: given corpus (english or serbian)
         :param is_english: True if corpus is english, False if corpus is serbian
+        :param tree_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
         :return: precision, recall, f measure and accuracy for given corpus
         """
         tp = 0
@@ -262,7 +277,7 @@ class WordNetHelper:
                 file = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus" + os.sep + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
             i += 1
 
-            new_rating = self.swn_polarity(text, file, is_english)
+            new_rating = self.swn_polarity(text, file, is_english, tree_classes)
 
             file.write("\nNew Rating: " + new_rating)
             file.close()
