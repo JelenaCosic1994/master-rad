@@ -1,16 +1,11 @@
 # Sentiment text analysis using lexical resources
 
 - Folder util:
-    - parser.py - contains functions for parsing film reviews from corpuses
     - loader.py - contains functions for loading resources
     - converter.py - contains functions for converting
     - serbian_stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
     - wordnet_helper.py - class for manipulating data from wordnet (english and serbian)
     - constants.py - contains string constants for rating documents
-- Folder entity:
-    - word.py - class for representing word
-    - sentence.py - class for representing sentence
-    - text.py - class for representing text
 - Folder tests:
     - contains tests for functions in project
 - main.py - main file
@@ -19,8 +14,12 @@
     
 ## Input data:
 - Download all input data and locate them in folder src/input_data:
-    - Serbian corpus - film reviews: https://github.com/vukbatanovic/SerbMR, 
+    - Serbian corpus (3 classes) - film reviews: https://github.com/vukbatanovic/SerbMR (SerbMR-3C - csv format),
+        - positive (841), negative (841) and neutral (841) reviews
+    - Serbian corpus (2 classes) - film reviews: https://github.com/vukbatanovic/SerbMR (SerbMR-2C - csv format),
+        - positive (841) and negative (841) reviews
     - English corpus - film reviews: http://www.cs.cornell.edu/people/pabo/movie-review-data/review_polarity.tar.gz
+        - positive (1000) and negative (1000) reviews
     
 ## Libraries:
 - re
@@ -32,10 +31,16 @@
 - transliterate
 - pandas
 - xml
+- string
 
+##Results:
+
+- Serbian corpus (2 classes):
+    - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
+- English corpus (2 classes):
+    - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
 
 ## References:
-
 - Manning, Christopher D., and Hinrich Schütze. Foundations of statistical natural language processing.
 Vol. 999. Cambridge: MIT press, 1999.
 - Bird, S., Klein, E., & Loper, E. Natural language processing with Python: analyzing text with
