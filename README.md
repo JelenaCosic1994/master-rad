@@ -33,7 +33,7 @@
 - xml
 - string
 
-##Results:
+## Results:
 
 - Serbian corpus (2 classes):
     - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
