@@ -107,13 +107,13 @@ class WordNetHelper:
         else:
             return 0, 0
 
-    def swn_polarity(self, text, file, is_english, tree_classes):
+    def swn_polarity(self, text, file, is_english, three_classes):
         """
         Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
         :param text: string which represents text - film review
         :param file: file to write results
         :param is_english: param for recognizing language
-        :param tree_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
+        :param three_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
         :return: sentiment polarity for given text
         """
 
@@ -149,7 +149,7 @@ class WordNetHelper:
         file.write("\n score for text: positive - " + str(pos_avg_text) + " , negative - " + str(neg_avg_text) + " i razlika: " + str(pos_avg_text-neg_avg_text) + "\n")
 
         treshold_value = 0.05
-        if tree_classes:
+        if three_classes:
             if abs(pos_avg_text - neg_avg_text) <= treshold_value:
                 return const.NEUTRAL
             if (pos_avg_text - neg_avg_text) > treshold_value:
@@ -255,12 +255,12 @@ class WordNetHelper:
 
         return pos_score_sentence, neg_score_sentence, count_words
 
-    def calc_percents_for_corpus(self, corpus, is_english, tree_classes):
+    def calc_percents_for_corpus(self, corpus, is_english, three_classes):
         """
         Function for calculating precision, recall, f measure and accuracy for given corpus
         :param corpus: given corpus (english or serbian)
         :param is_english: True if corpus is english, False if corpus is serbian
-        :param tree_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
+        :param three_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
         :return: precision, recall, f measure and accuracy for given corpus
         """
         tp = 0
@@ -277,7 +277,7 @@ class WordNetHelper:
                 file = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus" + os.sep + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
             i += 1
 
-            new_rating = self.swn_polarity(text, file, is_english, tree_classes)
+            new_rating = self.swn_polarity(text, file, is_english, three_classes)
 
             file.write("\nNew Rating: " + new_rating)
             file.close()
