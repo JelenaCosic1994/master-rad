@@ -46,8 +46,11 @@
         - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
 - Supervised:
     - English corpus (2 classes):
-        - positive: precision: 77%, recall: 80%, f measure: 79%
-        - negative: precision: 78%, recall: 74%, f measure: 76%
+        - negative: precision: 77%, recall: 80%, f measure: 79%
+        - positive: precision: 78%, recall: 74%, f measure: 76%
+    - Serbian corpus (2 classes):
+        - negative: precision: 71%, recall: 68%, f measure: 70%
+        - positive: precision: 68%, recall: 71%, f measure: 69%
 ## References:
 - Manning, Christopher D., and Hinrich Schütze. Foundations of statistical natural language processing.
 Vol. 999. Cambridge: MIT press, 1999.
