@@ -5,7 +5,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import stopwords
-from nltk import sent_tokenize, word_tokenize, pos_tag
+from nltk import word_tokenize, pos_tag
 import os
 import xml.etree.ElementTree as et
 
@@ -82,179 +82,6 @@ class WordNetHelper:
 
         return data
 
-    def get_pos_neg_score_for_serbian_word(self, word, file):
-        """
-        Function for calculating positive and negative score for serbian word
-        :param word: input word
-        :param file: file for writing results
-        :return: positive and negative score
-        """
-        pos_scores = []
-        neg_scores = []
-
-        for i in range(len(self._wordnet_data["id"])):
-            literals = self._wordnet_data["literals"][i]
-            for literal in literals:
-                if literal.startswith(word):
-                    score = self._wordnet_data["score"][i]
-                    file.write("\nSENTIMENT: " + "positive: " + str(score[0]) + ", negative: " + str(score[1]) + "\n")
-                    if score[0] != score[1] or score[0] != 0:
-                        pos_scores.append(score[0])
-                        neg_scores.append(score[1])
-                        break
-        if len(pos_scores) > 0:
-            return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores)
-        else:
-            return 0, 0
-
-    def swn_polarity(self, text, file, is_english, three_classes):
-        """
-        Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
-        :param text: string which represents text - film review
-        :param file: file to write results
-        :param is_english: param for recognizing language
-        :param three_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
-        :return: sentiment polarity for given text
-        """
-
-        count_sentences = 0
-        pos_score_text = 0
-        neg_score_text = 0
-
-        if is_english:
-            raw_sentences = sent_tokenize(text)
-        else:
-            raw_sentences = converter.split_text_to_sentences(text)
-
-        for raw_sentence in raw_sentences:
-
-            if is_english:
-                pos_score_sentence, neg_score_sentence, count_words = self._get_score_for_english_raw_sentence(
-                    raw_sentence, file)
-            else:
-                pos_score_sentence, neg_score_sentence, count_words = self._get_score_for_serbian_raw_sentence(
-                    raw_sentence, file)
-
-            pos_avg_sentence, neg_avg_sentence = (
-            pos_score_sentence / count_words, neg_score_sentence / count_words) if count_words != 0 else (0, 0)
-
-            if pos_avg_sentence != neg_avg_sentence or pos_avg_sentence != 0:
-                pos_score_text += pos_avg_sentence
-                neg_score_text += neg_avg_sentence
-                count_sentences += 1
-
-        pos_avg_text, neg_avg_text = (
-        pos_score_text / count_sentences, neg_score_text / count_sentences) if count_sentences != 0 else (0, 0)
-
-        file.write("\n score for text: positive - " + str(pos_avg_text) + " , negative - " + str(neg_avg_text) + " i razlika: " + str(pos_avg_text-neg_avg_text) + "\n")
-
-        treshold_value = 0.05
-        if three_classes:
-            if abs(pos_avg_text - neg_avg_text) <= treshold_value:
-                return const.NEUTRAL
-            if (pos_avg_text - neg_avg_text) > treshold_value:
-                return const.POSITIVE
-            if (neg_avg_text - pos_avg_text) > treshold_value:
-                return const.NEGATIVE
-        else:
-            if pos_avg_text > neg_avg_text:
-                return const.POSITIVE
-            else:
-                return const.NEGATIVE
-
-    def _get_score_for_english_raw_sentence(self, raw_sentence, file):
-        """
-        Private function for calculating score for english sentence
-        :param raw_sentence: given sentence
-        :param file: file to write results
-        :return: positive score, negative score and number of right words
-        """
-        count_words = 0
-        pos_score_sentence = 0
-        neg_score_sentence = 0
-
-        par = 1
-
-        tagged_sentence = pos_tag(word_tokenize(raw_sentence))
-
-        for word, tag in tagged_sentence:
-            wn_tag = converter.penn_to_wn(tag)
-
-            # ignore words with wrong tag
-            if wn_tag not in (wn.NOUN, wn.ADJ, wn.ADV):
-                continue
-
-            # ignore stop words
-            if word in self._english_stop_words:
-                continue
-
-            # lemmatization
-            lemma = self._lemmatizer.lemmatize(word, pos=wn_tag)
-            if not lemma:
-                continue
-
-            # get synsets for lemma
-            synsets = wn.synsets(lemma, pos=wn_tag)
-            if not synsets:
-                continue
-
-            file.write("WORD " + word + "\t")
-            file.write("FIRST SYNSET FOR WORD: " + str(synsets[0].name))
-
-            # take first synset
-            swn_synset = swn.senti_synset(synsets[0].name())
-            pos = swn_synset.pos_score()
-            neg = swn_synset.neg_score()
-
-            file.write("\nSENTIMENT: " + "positive: " + str(pos) + ", negative: " + str(neg) + "\n")
-
-            if pos != neg or pos != 0:
-                pos_score_sentence += pos*par
-                neg_score_sentence += neg*par
-                count_words += 1
-                par += 1
-
-        return pos_score_sentence, neg_score_sentence, count_words
-
-    def _get_score_for_serbian_raw_sentence(self, raw_sentence, file):
-        """
-        Private function for calculating score for serbian sentence
-        :param raw_sentence: given sentence
-        :param file: file to write results
-        :return: positive score, negative score and number of right words
-        """
-        count_words = 0
-        pos_score_sentence = 0
-        neg_score_sentence = 0
-
-        for w in word_tokenize(raw_sentence):
-            # convert word to lowercase and delete spaces
-            word = w.lower().strip()
-
-            # if is word in cyrillic convert to latinic
-            if converter.is_cyrillic_text(word):
-                word = converter.convert_word_to_latinic(word)
-
-            # ignore stop words
-            if word in self._serbian_stop_words:
-                continue
-
-            # stemming
-            stem_word = serbian_stemmer.stem_str(word)
-
-            file.write("WORD " + word + "\t")
-            file.write("STEM WORD: " + stem_word + "\n")
-
-            # pos and neg score from wordnet
-            pos, neg = self.get_pos_neg_score_for_serbian_word(stem_word.strip(), file)
-
-            if pos != neg or pos != 0:
-                pos_score_sentence += pos
-                neg_score_sentence += neg
-                count_words += 1
-
-        return pos_score_sentence, neg_score_sentence, count_words
-
     def calc_percents_for_corpus(self, corpus, is_english, three_classes):
         """
         Function for calculating precision, recall, f measure and accuracy for given corpus
@@ -277,7 +104,7 @@ class WordNetHelper:
                 file = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus" + os.sep + str(i) + "_" + rating + ".txt", "w", encoding='utf8')
             i += 1
 
-            new_rating = self.swn_polarity(text, file, is_english, three_classes)
+            new_rating = self.swn_polarity(text, is_english, three_classes, file)
 
             file.write("\nNew Rating: " + new_rating)
             file.close()
@@ -299,3 +126,167 @@ class WordNetHelper:
         accuracy = (tp + tn) / (tp + fp + fn + tn) * 100
 
         return precision, recall, f_measure, accuracy
+
+    def swn_polarity(self, text, is_english, three_classes, file):
+        """
+        Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
+        :param text: string which represents text - film review
+        :param is_english: param for recognizing language
+        :param three_classes: True if  corpus have 3 classes (positive, negative and neutral), False otherwise
+        :param file: file to write results
+        :return: sentiment polarity for given text
+        """
+        pos_score_text, neg_score_text, count_words = self._get_score_for_text(text, is_english)
+        pos_avg_text, neg_avg_text = (pos_score_text / count_words, neg_score_text / count_words) if count_words != 0 else (0, 0)
+        file.write("\n score for text: positive - " + str(pos_avg_text) + " , negative - " + str(neg_avg_text) + " and diff: " + str(pos_avg_text-neg_avg_text) + "\n")
+
+        treshold_value = 0.05
+        if three_classes:
+            if abs(pos_avg_text - neg_avg_text) <= treshold_value:
+                return const.NEUTRAL
+            if (pos_avg_text - neg_avg_text) > treshold_value:
+                return const.POSITIVE
+            if (neg_avg_text - pos_avg_text) > treshold_value:
+                return const.NEGATIVE
+        else:
+            if pos_avg_text > neg_avg_text:
+                return const.POSITIVE
+            else:
+                return const.NEGATIVE
+
+    def _get_score_for_text(self, text, is_english):
+        """
+        Private function for calculating score for text
+        :param text: given text
+        :param is_english: param for recognizing language
+        :return: positive score, negative score and number of right words
+        """
+        count_words = 0
+        pos_score_text = 0
+        neg_score_text = 0
+        par = 1
+
+        if is_english:
+            clean_text = self.clear_english_text(text)
+            for lemma, wn_tag in clean_text:
+                pos, neg = self.get_pos_neg_score_for_english_word(lemma, wn_tag)
+
+                if pos != neg or pos != 0:
+                    pos_score_text += pos * par
+                    neg_score_text += neg * par
+                    count_words += 1
+                    par += 1
+        else:
+            clean_text = self.clear_serbian_text(text)
+            for word in clean_text:
+                # get pos and neg score for word from wordnet
+                pos, neg = self.get_pos_neg_score_for_serbian_word(word)
+
+                if pos != neg or pos != 0:
+                    pos_score_text += pos * par
+                    neg_score_text += neg * par
+                    count_words += 1
+                    # par += 1
+        return pos_score_text, neg_score_text, count_words
+
+    def clear_english_text(self, text):
+        """
+        Clear english text (ignore words with wrong tag, ignore stop words i do lemmatization)
+        :param text: given text
+        :return: clean text
+        """
+        clean_text = []
+
+        tagged_text = pos_tag(word_tokenize(text))
+
+        for word, tag in tagged_text:
+            wn_tag = converter.penn_to_wn(tag)
+
+            # ignore words with wrong tag
+            if wn_tag not in (wn.NOUN, wn.ADJ, wn.ADV):
+                continue
+
+            # ignore stop words
+            if word in self._english_stop_words:
+                continue
+
+            # lemmatization
+            lemma = self._lemmatizer.lemmatize(word, pos=wn_tag)
+            if not lemma:
+                continue
+
+            clean_text.append((lemma, wn_tag))
+
+        return clean_text
+
+    def clear_serbian_text(self, text):
+        """
+        Clear serbian text(convert to latinic, ignore stop words, and stemming)
+        :param text: given text
+        :return: clean text
+        """
+        clean_text = []
+
+        for w in word_tokenize(text):
+            # convert word to lowercase and delete spaces
+            word = w.lower().strip()
+
+            # if is word in cyrillic convert to latinic
+            if converter.is_cyrillic_text(word):
+                word = converter.convert_word_to_latinic(word)
+
+            # ignore stop words
+            if word in self._serbian_stop_words:
+                continue
+
+            # stemming
+            stem_word = serbian_stemmer.stem_str(word)
+
+            result_word = stem_word.strip()
+
+            clean_text.append(result_word)
+
+        return clean_text
+
+    def get_pos_neg_score_for_serbian_word(self, word):
+        """
+        Function for calculating positive and negative score for serbian word
+        :param word: input word
+        :return: positive and negative score
+        """
+        pos_scores = []
+        neg_scores = []
+
+        for i in range(len(self._wordnet_data["id"])):
+            literals = self._wordnet_data["literals"][i]
+            for literal in literals:
+                if literal.startswith(word):
+                    score = self._wordnet_data["score"][i]
+                    if score[0] != score[1] or score[0] != 0:
+                        pos_scores.append(score[0])
+                        neg_scores.append(score[1])
+                        break
+        if len(pos_scores) > 0:
+            return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores)
+        else:
+            return 0, 0
+
+    def get_pos_neg_score_for_english_word(self, lemma, wn_tag):
+        """
+        Function for calculating positive and negative score for english word
+        :param lemma: input lemma for word
+        :param wn_tag: tag from wordnet
+        :return: positive and negative score
+        """
+        # get synsets for lemma
+        synsets = wn.synsets(lemma, pos=wn_tag)
+        pos = 0
+        neg = 0
+
+        if synsets:
+            # take first synset
+            swn_synset = swn.senti_synset(synsets[0].name())
+            pos = swn_synset.pos_score()
+            neg = swn_synset.neg_score()
+
+        return pos, neg
