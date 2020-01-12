@@ -5,6 +5,7 @@
     - converter.py - contains functions for converting
     - serbian_stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
     - wordnet_helper.py - class for manipulating data from wordnet (english and serbian)
+    - classifier_helper.py - file for creating model for svm classifier
     - constants.py - contains string constants for rating documents
 - Folder tests:
     - contains tests for functions in project
@@ -32,16 +33,21 @@
 - pandas
 - xml
 - string
+- sklearn
+- numpy
 
 ## Results:
-
-- Serbian corpus (2 classes):
-    - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
-- Serbian corpus (3 classes):
-    - precision: 62.14%, recall: 95.25% f measure: 75.22%, accuracy: 62.61%
-- English corpus (2 classes):
-    - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
-
+- Unsupervised:
+    - Serbian corpus (2 classes):
+        - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
+    - Serbian corpus (3 classes):
+        - precision: 62.14%, recall: 95.25% f measure: 75.22%, accuracy: 62.61%
+    - English corpus (2 classes):
+        - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
+- Supervised:
+    - English corpus (2 classes):
+        - positive: precision: 77%, recall: 80%, f measure: 79%
+        - negative: precision: 78%, recall: 74%, f measure: 76%
 ## References:
 - Manning, Christopher D., and Hinrich Schütze. Foundations of statistical natural language processing.
 Vol. 999. Cambridge: MIT press, 1999.
