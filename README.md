@@ -37,6 +37,8 @@
 
 - Serbian corpus (2 classes):
     - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
+- Serbian corpus (3 classes):
+    - precision: 62.14%, recall: 95.25% f measure: 75.22%, accuracy: 62.61%
 - English corpus (2 classes):
     - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
 
