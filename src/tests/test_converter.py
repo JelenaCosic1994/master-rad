@@ -1,77 +1,38 @@
 import unittest
-from src.parser.parser import Parser
-import src.parser.loader as loader
+import src.util.loader as loader
+import src.util.converter as converter
+import os
 
 
 class MyTestCase(unittest.TestCase):
 
-    def test_get_words_from_sentence(self):
-        sentence1 = "Ja sam Jelena!"
-        words_from_sentence_1 = Parser.get_words_from_sentence(sentence1)
-        expected_words1 = ['Ja', 'sam', 'Jelena']
-        self.assertEqual(expected_words1, words_from_sentence_1)
-
-        sentence2 = "On upita: \"Kako se ti zoves\"?"
-        words_from_sentence_2 = Parser.get_words_from_sentence(sentence2)
-        expected_words2 = ['On', 'upita', 'Kako', 'se', 'ti', 'zoves']
-        self.assertEqual(expected_words2, words_from_sentence_2)
-
-    def test_get_sentences_from_text(self):
-        text = "Ja sam Jelena! On upita: \"Kako se ti zoves\"?"
-        sentences_from_text = Parser.get_sentences_from_text(text)
-        expected_sentences = ['Ja sam Jelena!', 'On upita: \"Kako se ti zoves\"?']
-        self.assertEqual(expected_sentences, sentences_from_text)
-
-    def test_remove_stop_words_from_sentence(self):
-        stop_words = loader.load_stop_words("..\\..\\input_data\\StopWords")
-        parser = Parser(stop_words)
-        result = parser.remove_stop_words_from_sentence("Ja sam Ana i volim 45!")
-        self.assertEqual(['Ana', 'volim'], result)
-
-    def test_remove_stop_words_from_text(self):
-        stop_words = loader.load_stop_words("..\\..\\input_data\\StopWords")
-        print(stop_words)
-        parser = Parser(stop_words)
-        result = parser.remove_stop_words_from_text("U životu sam pogledao mnogo loših filmova. Iz raznih razloga. "
-                        "Vremenom sam se pomirio sa činjenicom da postoji dosta takvih I da obzirom na količinu otprilike "
-                        "svaki četvrti na koji nabasam mora biti loš. Kako su prolazili kroz moj DVD plejer, shvatio sam da "
-                        "I tu posotoji neka klasifikacija. Postoje manje loši, užasno loši, trash koji su čak i gledljivi, "
-                        "bedno-patetični, oni gde je gluma kao u pozorištancetu Puž, gde je režija zeznula stvar, filmovi gde "
-                        "scenario nema veze s mozgom, oni koji bi trebalo da su smešni a to nikako nisu, dosadni i predugi, "
-                        "jadni a skupi, itd. Bilo je čak i nekih koji su kombinovali dva-tri ova elementa u sebi. ")
-        self.assertEqual(['životu', 'pogledao', 'loših', 'filmova', 'raznih', 'razloga', 'Vremenom', 'pomirio', 'činjenicom',
-                          'količinu', 'otprilike', 'četvrti', 'nabasam', 'loš', 'prolazili', 'DVD', 'plejer', 'shvatio',
-                          'posotoji', 'klasifikacija', 'loši', 'užasno', 'loši', 'trash', 'gledljivi', 'bedno', 'patetični',
-                          'gluma', 'pozorištancetu', 'Puž', 'režija', 'zeznula', 'stvar', 'filmovi', 'scenario', 'veze',
-                          'mozgom', 'smešni', 'nisu', 'dosadni', 'predugi', 'jadni', 'skupi', 'kombinovali', 'elementa'], result)
-
     def test_is_cyrillic_text(self):
         input_string_true = "Чика Ђорђе жваће шљиве, његова ћерка Љиљана једе џем!"
-        result_1 = Parser.is_cyrillic_text(input_string_true)
+        result_1 = converter.is_cyrillic_text(input_string_true)
         self.assertTrue(result_1)
 
         input_string_false = "Čika Đorđe žvaće šljive, njegova ćerka Ljiljana jede džem!"
-        result_2 = Parser.is_cyrillic_text(input_string_false)
+        result_2 = converter.is_cyrillic_text(input_string_false)
         self.assertFalse(result_2)
 
         input_string_combined = "Чика Đorđe жваће šljive, његова ćerka Љиљана jede џем!"
-        result_3 = Parser.is_cyrillic_text(input_string_combined)
+        result_3 = converter.is_cyrillic_text(input_string_combined)
         self.assertTrue(result_3)
 
-        input_string_from_file_1 = loader.load_text_from_txt_file("..\\..\\input_data\\cyrillic_text.txt")
-        result_4 = Parser.is_cyrillic_text(input_string_from_file_1)
+        input_string_from_file_1 = loader.load_text_from_txt_file(".." + os.sep + ".." + os.sep + "input_data" + os.sep + "cyrillic_text.txt")
+        result_4 = converter.is_cyrillic_text(input_string_from_file_1)
         self.assertTrue(result_4)
 
-        input_string_from_file_2 = loader.load_text_from_txt_file("..\\..\\input_data\\text.txt")
-        result_5 = Parser.is_cyrillic_text(input_string_from_file_2)
+        input_string_from_file_2 = loader.load_text_from_txt_file(".." + os.sep + ".." + os.sep + "input_data" + os.sep + "text.txt")
+        result_5 = converter.is_cyrillic_text(input_string_from_file_2)
         self.assertFalse(result_5)
 
-    def test_translate_from_cyrillic_to_latinic(self):
-        result_1 = Parser.convert_from_cyrillic_to_latinic("Чика Ђорђе жваће шљиве, његова ћерка Љиљана једе џем!")
+    def test_convert_text_to_latinic(self):
+        result_1 = converter.convert_text_to_latinic("Чика Ђорђе жваће шљиве, његова ћерка Љиљана једе џем!")
         self.assertEqual("Čika Đorđe žvaće šljive, njegova ćerka Ljiljana jede džem!", result_1)
 
-        text = loader.load_text_from_txt_file("..\\..\\input_data\\cyrillic_text.txt")
-        result_2 = Parser.convert_from_cyrillic_to_latinic(text)
+        text = loader.load_text_from_txt_file(".." + os.sep + ".." + os.sep + "input_data" + os.sep + "cyrillic_text.txt")
+        result_2 = converter.convert_text_to_latinic(text)
         self.assertEqual("A šta ste očekivali? NAPOMENA: Kako me je @timjohnbyford obavestio verzija filma koja se prikazuje "
                          "u našim bioskopima je na bošnjačkom/srpskom/jeziku koji razumemo. Verzija filma koji sam ja gledao "
                          "(VOD rip sa neta) je na engleskom. Dakle, film nije nahovan na engleski preko pomenutih jezika, "
@@ -149,6 +110,42 @@ class MyTestCase(unittest.TestCase):
                          "(nije li nas Anđelinin film opet malo zaratio, a?), možda se moglo malo pomučiti zarad uspešnijeg ostvarenja "
                          "višeg cilja. U zemlji krvi i meda je film sa mnogo krvi i bez imalo meda, ali ono što je još bitnije- on "
                          "fundamentalno odbacuje ideju da se oni \"smiješano najlakše piju\".", result_2)
+
+    def test_convert_from_float_to_string(self):
+        input_1 = 23454311
+        result_1 = converter.convert_from_float_to_string(input_1)
+        self.assertEqual("23454311", result_1)
+
+        input_2 = 2345
+        result_2 = converter.convert_from_float_to_string(input_2)
+        self.assertEqual("00002345", result_2)
+
+    def test_convert_serbian_word_to_aurora(self):
+        word_1 = "Đorđe"
+        result_1 = converter.convert_serbian_word_to_aurora(word_1)
+        self.assertEqual("dxordxe", result_1)
+
+        word_2 = "Djordje"
+        result_2 = converter.convert_serbian_word_to_aurora(word_2)
+        self.assertEqual("Djordje", result_2)
+
+    def test_remove_punctuation(self):
+        input_sentence = "Ja sam dr. Jelena. Mnogo volim Python!"
+        result = converter.remove_punctuation(input_sentence)
+        self.assertEqual("Ja sam dr Jelena Mnogo volim Python", result)
+
+    def test_penn_to_wn(self):
+        tag_1 = "NOUN"
+        result_1 = converter.penn_to_wn(tag_1)
+        self.assertEqual("n", result_1)
+
+        tag_2 = "VERB"
+        result_2 = converter.penn_to_wn(tag_2)
+        self.assertEqual("v", result_2)
+
+        tag_3 = "BEAUTY"
+        result_3 = converter.penn_to_wn(tag_3)
+        self.assertEqual(None, result_3)
 
 
 if __name__ == '__main__':
