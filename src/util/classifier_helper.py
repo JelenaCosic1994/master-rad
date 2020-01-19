@@ -47,6 +47,9 @@ def create_model(wordnet_helper, corpus, is_english):
             data.append(word_list)
 
     x_data = create_sparse_matrix(data, vocabulary)
+    # delete data from memory
+    del data
+    del vocabulary
 
     return x_data, y_data
 
