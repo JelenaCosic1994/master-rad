@@ -1,7 +1,6 @@
 import re
 import string
 from transliterate import translit
-from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.corpus import wordnet as wn
 
 
@@ -14,7 +13,7 @@ def is_cyrillic_text(text):
     return bool(re.search('[а-шА-Ш]', text))
 
 
-def convert_word_to_latinic(word):
+def convert_text_to_latinic(word):
     """
     Function for converting cyrillic serbian word to latinic serbian word
     :param word: string which represents cyrillic serbian word
@@ -59,25 +58,6 @@ def convert_serbian_word_to_aurora(word):
     aurora_str = aurora_str.replace("Đ", "dx")
     aurora_str = aurora_str.replace("Ž", "zx")
     return aurora_str
-
-
-def split_text_to_sentences(text):
-    """
-    Function for split text into sentences
-    :param text: string which represents some text
-    :return: list of large string
-    """
-    tokenizer = PunktSentenceTokenizer()
-
-    tokenizer._params.abbrev_types.add('mr')
-    tokenizer._params.abbrev_types.add('dr')
-    tokenizer._params.abbrev_types.add('td')
-    tokenizer._params.abbrev_types.add('tj')
-
-    text = text.replace('...', '.')
-    text = text.replace('.)', ')')
-    clean_sentences = tokenizer.tokenize(text)
-    return clean_sentences
 
 
 def penn_to_wn(tag):
