@@ -17,13 +17,13 @@ def create_model(wordnet_helper, corpus, is_english):
     id = 0
     y_data = []
     data = []   # array for all texts which element is list which element is tuple(id, diff) for word in text
-
+    i = 1
     for t, rating in corpus:
         y_data.append(rating)
-        text = converter.remove_punctuation(t)
         word_list = []
 
         if is_english:
+            text = converter.remove_punctuation(t)
             clean_text = wordnet_helper.clear_english_text(text)
             for lemma, wn_tag in clean_text:
                 pos, neg = wordnet_helper.get_pos_neg_score_for_english_word(lemma, wn_tag)
@@ -35,7 +35,7 @@ def create_model(wordnet_helper, corpus, is_english):
 
             data.append(word_list)
         else:
-            clean_text = wordnet_helper.clear_serbian_text(text)
+            clean_text = wordnet_helper.clear_serbian_text(i)
             for word in clean_text:
                 pos, neg = wordnet_helper.get_pos_neg_score_for_serbian_word(word)
                 diff = pos - neg
@@ -45,7 +45,7 @@ def create_model(wordnet_helper, corpus, is_english):
                 word_list.append(vocabulary[word])
 
             data.append(word_list)
-
+        i += 1
     x_data = create_sparse_matrix(data, vocabulary)
     # delete data from memory
     del data

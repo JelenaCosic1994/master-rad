@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # load english corpus - 2 classes
     english_corpus = loader.load_english_corpus(".." + os.sep + "input_data" + os.sep + "txt_sentoken - all items")
 
-    wordnet_helper = WordNetHelper(english_wordnet, ".." + os.sep + "input_data" + os.sep + "wnsrp.xml", serbian_stop_words)
+    wordnet_helper = WordNetHelper(english_wordnet, ".." + os.sep + "input_data" + os.sep + "wnsrp.xml", serbian_stop_words, ".." + os.sep + "input_data" + os.sep + "dictionary")
 
     # English corpus - 2 classes
     precision, recall, f_measure, accuracy = wordnet_helper.calc_percents_for_corpus(english_corpus, True, False)
