@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     # Serbian corpus - 2 classes
     precision, recall, f_measure, accuracy = wordnet_helper.calc_percents_for_corpus(serbian_corpus_2_classes, False, False)
-    result_file_serbian2 = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus" + os.sep + "result2.txt", "w", encoding='utf8')
+    result_file_serbian2 = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus_3" + os.sep + "result2.txt", "w", encoding='utf8')
     print("Serbian corpus - 2 classes:\n")
     print("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure) + " accuracy: " + str(accuracy))
     result_file_serbian2.write("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure) + " accuracy: " + str(accuracy))
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     # Serbian corpus - 3 classes
     precision, recall, f_measure, accuracy = wordnet_helper.calc_percents_for_corpus(serbian_corpus_3_classes, False, True)
-    result_file_serbian3 = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus" + os.sep + "result3.txt", "w", encoding='utf8')
+    result_file_serbian3 = open(".." + os.sep + "output_data" + os.sep + "serbian_corpus_3" + os.sep + "result3.txt", "w", encoding='utf8')
     print("Serbian corpus - 3 classes:\n")
     print("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure) + " accuracy: " + str(accuracy))
     result_file_serbian3.write("precision: " + str(precision) + " recall: " + str(recall) + " f measure: " + str(f_measure) + " accuracy: " + str(accuracy))
@@ -63,5 +63,3 @@ if __name__ == '__main__':
     result_svm_serbian3 = open(".." + os.sep + "output_data" + os.sep + "result_svm_serbian3.txt", "w", encoding='utf8')
     result_svm_serbian3.write(classification_report)
     result_svm_serbian3.close()
-
-

@@ -116,12 +116,19 @@ def load_xlsx_file(file_path):
 
 def load_text_dictionary(ordinary, dir_path):
 
+    # if ordinary >= 1 and ordinary <= 50:
+    #     class_tag = "pos"
+    # elif ordinary >= 51 and ordinary <= 100:
+    #     class_tag = "neg"
+    # else:
+    #     class_tag = "neutr"
+
     if 1 <= ordinary <= 841:
         class_tag = "pos"
     elif 842 <= ordinary <= 1682:
-        class_tag = "neg"
-    else:
         class_tag = "neutr"
+    else:
+        class_tag = "neg"
 
     text_number = ordinary % 841
     if text_number == 0:
@@ -140,7 +147,7 @@ def load_text_dictionary(ordinary, dir_path):
                 lines = file.readlines()
                 for line in lines:
                     splits = re.split(r'\s', line)
-                    if len(splits) != 4 or splits[1] in ('PUNCT', 'SENT'):
+                    if len(splits) != 4: # or splits[1] in ('PUNCT', 'SENT'):
                         continue
                     word = splits[0]
                     tag = splits[1]
