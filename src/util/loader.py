@@ -103,36 +103,45 @@ def load_stop_words(dir_path):
     return set(data.split())
 
 
-def load_xlsx_file(file_path):
+def load_xlsx_file(file_path, sheet_number):
     """
     Function for loading first sheet in some xlsx file
     :param file_path: path to the xlsx file
+    :param sheet_number: number of sheet in file
     :return: data frame with all data
     """
     xl = pd.ExcelFile(file_path)
-    data_frame = xl.parse('Sheet1')
+    data_frame = xl.parse('Sheet' + str(sheet_number))
     return data_frame
 
 
-def load_text_dictionary(ordinary, dir_path):
+def load_text_dictionary(ordinary, dir_path, three_classes):
+    """
+    FUnction for load serbian dictionary
+    :param ordinary: ordinal number of text
+    :param dir_path: path to the dictionary
+    :param three_classes:
+    :return:
+    """
 
-    # if ordinary >= 1 and ordinary <= 50:
-    #     class_tag = "pos"
-    # elif ordinary >= 51 and ordinary <= 100:
-    #     class_tag = "neg"
-    # else:
-    #     class_tag = "neutr"
-
-    if 1 <= ordinary <= 841:
-        class_tag = "pos"
-    elif 842 <= ordinary <= 1682:
-        class_tag = "neutr"
+    if three_classes:
+        # if corpus have 3 classes: positive, negative and neutral
+        if 1 <= ordinary <= 841:
+            class_tag = "pos"
+        elif 842 <= ordinary <= 1682:
+            class_tag = "neutr"
+        else:
+            class_tag = "neg"
     else:
-        class_tag = "neg"
+        # if corpus have 2 classes: positive and negative
+        if 1 <= ordinary <= 841:
+            class_tag = "pos"
+        else:
+            class_tag = "neg"
 
     text_number = ordinary % 841
     if text_number == 0:
-        text_number = 1
+        text_number = 841
 
     # filename is in format number_pos.tt or number_neg.tt or number_neutr.tt
     filename = str(text_number) + "_" + class_tag + ".tt"
@@ -147,11 +156,11 @@ def load_text_dictionary(ordinary, dir_path):
                 lines = file.readlines()
                 for line in lines:
                     splits = re.split(r'\s', line)
-                    if len(splits) != 4: # or splits[1] in ('PUNCT', 'SENT'):
+                    if len(splits) != 4:
                         continue
                     word = splits[0]
                     tag = splits[1]
                     lemma = splits[2]
                     data.append((word, tag, lemma))
                 file.close()
-    return data
+    return data, filename
