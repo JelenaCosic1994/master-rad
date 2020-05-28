@@ -7,28 +7,32 @@ class MyTestCase(unittest.TestCase):
 
     def test_load_text_from_txt(self):
         data = loader.load_text_from_txt_file(".." + os.sep + ".." + os.sep + "input_data" + os.sep + "text.txt")
-        expected_text = "U životu sam pogledao mnogo loših filmova. Iz raznih razloga. " \
-                        "Vremenom sam se pomirio sa činjenicom da postoji dosta takvih I da obzirom na količinu otprilike " \
-                        "svaki četvrti na koji nabasam mora biti loš. Kako su prolazili kroz moj DVD plejer, shvatio sam da " \
-                        "I tu posotoji neka klasifikacija. Postoje manje loši, užasno loši, trash koji su čak i gledljivi, " \
-                        "bedno-patetični, oni gde je gluma kao u pozorištancetu Puž, gde je režija zeznula stvar, filmovi gde " \
-                        "scenario nema veze s mozgom, oni koji bi trebalo da su smešni a to nikako nisu, dosadni i predugi, " \
-                        "jadni a skupi, itd. Bilo je čak i nekih koji su kombinovali dva-tri ova elementa u sebi. " \
-                        "Stari mudraci su mi pričali da će se jednom pojaviti jedan film koji će sadržati apsolutno " \
-                        "SVE elemente lošeg filma u sebi. One film to rule them all! Film koji će biti toliko loš da će " \
-                        "svi biti zaprepašćeni. Kada sam počeo da gledam Freelancers pomislio sam da to ne može biti TAJ film. " \
-                        "Ipak je kako-tako solidno počeo, imao čak i poneku ok scenu, par dobrih riba i što je najbitnije – legende " \
-                        "u svom kastingu koje su mi garantovale neku stopu kvaliteta. Međutim kako je odmicao, sve više lampica se palilo, " \
-                        "sve više tajnih elemenata očajnosti filma se pojavljivalo. 50 Cent je produbljivao značenje reči „loša gluma“ " \
-                        "i onda u epskom finalu, u poslednjih recimo 20 minuta filma, Freelancers je pokazao svoje pravo lice – " \
-                        "to je bio TAJ film, najgori koji sam ikada gledao, veličanstven u svojoj bedi. Scena u džipu sa De Nirom i Fiftijem " \
-                        "i uopšte zaplet koji je do nje doveo je nešto što mora da se vidi, čisto da bi shvatili o čemu pričam. " \
-                        "Možda, samo možda, ovaj film ne bi bio uzvišeno najgori da su među glumcima neki običnosi (dobio bi 3,4 kokice)," \
-                        " ali kada vidite na omotu da su se ovom ostvarenju pridružile filmske legende kao što su Robert De Niro i Forest Vitaker," \
-                        " svakako imena koja bi ušla u skoro svačije spiskove 10 najboljih glumaca, onda ovaj užas mnogo dobija na težini." \
-                        " Uporno tražim informacije da li su u nekim kockarskim dugovima ili ih Fifti drži u šaci zbog nekog orgijanja sa ne znam " \
-                        "kakvim životinjama. Jer to su jedini legitimni razlozi da učestvuju u ovakvom filmu. Bez obzira što čak i ima nekoliko" \
-                        " pozitivnih strana teret razočarenja je preveliki – dobija 0 kokica, jer ovo će se teško ponoviti. Proverite."
+        expected_text = "Petoro ljudi zarobljeno je u zaglavljenom liftu, s tim što je neko od njih ubica," \
+                        " a možda i nešto još gore... Ono što počinje kao film u maniru kakvog updateovanog Hitchcocka " \
+                        "završava se kao tipični Shyamalan - infantilna smeša natprirodnog trilera/horora i melodrame, " \
+                        "gde je sve sa svime i svako sa svakim u nekakvoj vezi Da je Đavo iz naslova više od potencijalne " \
+                        "metafore biva nam vrlo brzo predočeno iz vizure jednog od čuvara u zgradi koji postaje svojevrsni " \
+                        "(suvišni) vodič kroz film kao i medijum, da nam preko njega scenarista izloži deo koncepta koji " \
+                        "nije mogao ubedljivije da provuče kroz dešavanja. Posmatrano kao jedan mali visokokonceptualizovani " \
+                        "triler u kome je svako na neki način sumnjiv, Đavo uspeva da drži pažnju i tenziju na onom elementarnom" \
+                        " nivou naše zapitanosti: šta će sledeće da se desi, ko će (i kako) sledeći da umre, i najzad, ko je ubica?" \
+                        " Ovaj recept sa „deset malih crnaca' (samo u liftu) pružio je priliku za nekoliko zanimljivih scena i John " \
+                        "Erick Dowdle (Karantin) uspeva da dešavanja (a posebno nedešavanja) učini gledljivim i da uz pomoć sjajnog " \
+                        "direktora fotografije (Tak Fujimoto - Kad jaganjci utihnu, Šesto čulo...) sve to začini s nekoliko vrtoglavih" \
+                        " kadrova zlokobnog oblakodera. Međutim, čemu sve to ako se u pakovanju nalazi tek jedna razvučena epizoda" \
+                        " Zone sumraka? I to zaboravljiva i ispod proseka. Đavo je prvi film u horor serijalu Night Chronicles. " \
+                        "M. Night Shyamalan (producent i idejni tvorac) zamislio je da u svakom novom filmu drugi autor razradi" \
+                        " neku od njegovih ideja. Dakle, u osnovi to i jeste zamišljeno kao nešto nalik na Zonu sumraka u formatu" \
+                        " celovečernjeg filma, i Shyamalan kao da je poslušao vapaje publike i distancirao se od sopstvenih ideja," \
+                        " prepuštajući njihovu dalju razradu drugima umesto da izigrava kompletnog autora. Sasvim dobar koncept " \
+                        "koji će možda uspeti da profunkcioniše, ali ovaj prvi korak ostavio je za sobom zamrljane tragove koji" \
+                        " i previše podsećaju na Shyamalanova nedavna posrtanja. Dobra režija, uglavnom solidni i nepoznati glumci" \
+                        " u nebitnim ulogama (od poznatih lica tu su Bojana Novaković i Matt Craven u epizodici), muzika koja " \
+                        "potcrtava svaki trenutak napetosti (i pokušava da veštački stvori još koji), odlična fotografija... " \
+                        "Ali, u osnovi svega nalazi se slaba priča, naivno i pomalo didaktički vođena i uz rasplet koji je " \
+                        "interesantniji u onom površnom i u kontekstu ovog filma nebitnom smislu - ko je ubica? " \
+                        "Poenta, tj. njen pokušaj, čini se, nalazi se u odgovoru na pitanje zašto, a to se ovde svodi " \
+                        "na parafrazu završetka filma Znaci i glasi: misteriozni su putevi božji, odnosno, u ovom slučaju, đavolji."
         self.assertEqual(expected_text, data)
 
     def test_load_serbian_corpus(self):
@@ -103,8 +107,30 @@ class MyTestCase(unittest.TestCase):
 
     def test_load_xlsx_file(self):
         file_path = ".." + os.sep + ".." + os.sep + "input_data" + os.sep + "wnen.xlsx"
-        result = loader.load_xlsx_file(file_path)
+        result = loader.load_xlsx_file(file_path, 1)
         self.assertEqual(117659, len(result))
+
+    def test_load_text_dictionary(self):
+        file_path = ".." + os.sep + ".." + os.sep + "input_data" + os.sep + "dictionary"
+        result_data_pos, result_filename_pos = loader.load_text_dictionary(1, file_path, True)
+        self.assertEqual('1_pos.tt', result_filename_pos)
+        self.assertEqual(('Braća', 'A:aem', 'Braća'), result_data_pos[0])
+
+        result_data_neutr, result_filename_neutr = loader.load_text_dictionary(982, file_path, True)
+        self.assertEqual('141_neutr.tt', result_filename_neutr)
+        self.assertEqual(('film', 'N:m', 'film'), result_data_neutr[15])
+
+        result_data_neg, result_filename_neg = loader.load_text_dictionary(1698, file_path, True)
+        self.assertEqual('16_neg.tt', result_filename_neg)
+        self.assertEqual(('Day', 'A:aem', 'Day'), result_data_neg[5])
+
+        result_data_pos_2, result_filename_pos_2 = loader.load_text_dictionary(154, file_path, False)
+        self.assertEqual('154_pos.tt', result_filename_pos_2)
+        self.assertEqual(('je', 'PRO', 'ona'), result_data_pos_2[9])
+
+        result_data_neg_2, result_filename_neg_2 = loader.load_text_dictionary(898, file_path, False)
+        self.assertEqual('57_neg.tt', result_filename_neg_2)
+        self.assertEqual(('nova', 'A:aef', 'nov'), result_data_neg_2[3])
 
 
 if __name__ == '__main__':
