@@ -38,12 +38,14 @@
 
 ## Results:
 - Unsupervised:
+    - English corpus (2 classes):
+        - precision: 56.79%, recall: 85.7%, f measure: 68.31%, accuracy: 60.25%
     - Serbian corpus (2 classes):
         - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
     - Serbian corpus (3 classes):
         - precision: 62.14%, recall: 95.25% f measure: 75.22%, accuracy: 62.61%
-    - English corpus (2 classes):
-        - precision: 57.02%, recall: 87.7%, f measure: 69.11%, accuracy: 60.8%
+        - 0.02 precision: 55.26%, recall: 88.59%, f measure: 68.06%, accuracy: 56.63%
+
 - Supervised:
     - English corpus (2 classes):
         - negative: precision: 77%, recall: 80%, f measure: 79%
@@ -51,6 +53,10 @@
     - Serbian corpus (2 classes):
         - negative: precision: 71%, recall: 68%, f measure: 70%
         - positive: precision: 68%, recall: 71%, f measure: 69%
+    - Serbian corpus (3 classes):
+        - negative: precision: 49%, recall: 49%, f measure: 49%
+        - neutral: precision: 45%, recall: 50%, f measure: 47%
+        - positive: precision: 53%, recall: 47%, f measure: 50%
 ## References:
 - Manning, Christopher D., and Hinrich Schütze. Foundations of statistical natural language processing.
 Vol. 999. Cambridge: MIT press, 1999.

@@ -117,10 +117,10 @@ def load_xlsx_file(file_path, sheet_number):
 
 def load_text_dictionary(ordinary, dir_path, three_classes):
     """
-    FUnction for load serbian dictionary
+    Function for load serbian dictionary
     :param ordinary: ordinal number of text
     :param dir_path: path to the dictionary
-    :param three_classes:
+    :param three_classes: if corpus contains three - true, otherwise - false
     :return:
     """
 
