@@ -28,6 +28,9 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(result_5)
 
     def test_convert_text_to_latinic(self):
+        res = converter.convert_text_to_latinic("Ja sam Đorđe!")
+        self.assertEqual("Ja sam Đorđe!", res)
+
         result_1 = converter.convert_text_to_latinic("Чика Ђорђе жваће шљиве, његова ћерка Љиљана једе џем!")
         self.assertEqual("Čika Đorđe žvaće šljive, njegova ćerka Ljiljana jede džem!", result_1)
 
@@ -111,6 +114,7 @@ class MyTestCase(unittest.TestCase):
                          "višeg cilja. U zemlji krvi i meda je film sa mnogo krvi i bez imalo meda, ali ono što je još bitnije- on "
                          "fundamentalno odbacuje ideju da se oni \"smiješano najlakše piju\".", result_2)
 
+    # TODO: remove this!
     def test_convert_from_float_to_string(self):
         input_1 = 23454311
         result_1 = converter.convert_from_float_to_string(input_1)
@@ -120,6 +124,7 @@ class MyTestCase(unittest.TestCase):
         result_2 = converter.convert_from_float_to_string(input_2)
         self.assertEqual("00002345", result_2)
 
+    # TODO: remove this!
     def test_convert_serbian_word_to_aurora(self):
         word_1 = "Đorđe"
         result_1 = converter.convert_serbian_word_to_aurora(word_1)
