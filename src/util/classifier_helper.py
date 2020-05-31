@@ -5,12 +5,15 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 
 
-def create_model(wordnet_helper, corpus, is_english):
+def create_model(wordnet_helper, corpus, is_english, three_classes, wnsrb_param=None, is_prefix=None):
     """
     Create model
     :param wordnet_helper: instance of wordnet helper
     :param corpus: given corpus
     :param is_english: True is language is english, False otherwise
+    :param three_classes:
+    :param wnsrb_param:
+    :param is_prefix:
     :return: model
     """
     vocabulary = {}
@@ -26,7 +29,7 @@ def create_model(wordnet_helper, corpus, is_english):
             text = converter.remove_punctuation(t)
             clean_text = wordnet_helper.clear_english_text(text)
             for lemma, wn_tag in clean_text:
-                pos, neg = wordnet_helper.get_pos_neg_score_for_english_word(lemma, wn_tag)
+                pos, neg = wordnet_helper.get_score_for_english_word(lemma, wn_tag)
                 diff = pos - neg
                 if lemma not in vocabulary:
                     vocabulary[lemma] = (id, diff)
@@ -35,9 +38,9 @@ def create_model(wordnet_helper, corpus, is_english):
 
             data.append(word_list)
         else:
-            clean_text = wordnet_helper.clear_serbian_text(i)
+            clean_text, opis, filename = wordnet_helper.clear_serbian_text(i, three_classes)
             for word in clean_text:
-                pos, neg = wordnet_helper.get_pos_neg_score_for_serbian_word(word)
+                pos, neg, opis = wordnet_helper.get_score_for_serbian_word(word, wnsrb_param, is_prefix)
                 diff = pos - neg
                 if word not in vocabulary:
                     vocabulary[word] = (id, diff)
@@ -56,7 +59,7 @@ def create_model(wordnet_helper, corpus, is_english):
 
 def create_sparse_matrix(data, vocabulary):
     """
-    Crete sparse matrix for training and testing
+    Create sparse matrix for training and testing
     :param data: data for create x_data
     :param vocabulary: given vocabulary
     :return: x_data for training
@@ -73,21 +76,27 @@ def create_sparse_matrix(data, vocabulary):
     return sparse_matrix
 
 
-def svm_classifier(wordnet_helper, corpus, is_english):
+def svm_classifier(wordnet_helper, corpus, is_english, test_size, three_classes=None, wnsrb_param=None, is_prefix=None):
     """
     Implementation of svm classifier
     :param wordnet_helper: instance of wordnet helper
     :param corpus: given corpus
     :param is_english: True is language is english, False otherwise
+    :param test_size
+    :param three_classes
+    :param wnsrb_param
+    :param is_prefix:
     :return: classification report
     """
     # Create model for  corpus
-    x_data, y_data = create_model(wordnet_helper, corpus, is_english)
-    X_train, X_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.20)
+    x_data, y_data = create_model(wordnet_helper, corpus, is_english, three_classes, wnsrb_param, is_prefix)
+    X_train, X_test, y_train, y_test = train_test_split(x_data, y_data, test_size=test_size)
 
     # Classification
     svclassifier = SVC(kernel='linear')
     svclassifier.fit(X_train, y_train)
     y_pred = svclassifier.predict(X_test)
 
+    del x_data
+    del y_data
     return classification_report(y_test, y_pred)
