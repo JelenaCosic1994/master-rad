@@ -3,14 +3,15 @@
 - Folder util:
     - loader.py - contains functions for loading resources
     - converter.py - contains functions for converting
-    - serbian_stemmer.py - https://github.com/nikolamilosevic86/SerbianStemmer
     - wordnet_helper.py - class for manipulating data from wordnet (english and serbian)
     - classifier_helper.py - file for creating model for svm classifier
     - constants.py - contains string constants for rating documents
 - Folder tests:
     - contains tests for functions in project
+- Folder results:
+    - contains results  
 - main.py - main file
-- Pdf document - LaTeX project: https://www.overleaf.com/read/syksdbwjhndc
+- Pdf document - LaTeX project: https://www.overleaf.com/read/tncvwrbzmdbc
 
     
 ## Input data:
@@ -35,28 +36,25 @@
 - string
 - sklearn
 - numpy
+- unittest
 
 ## Results:
 - Unsupervised:
     - English corpus (2 classes):
-        - precision: 56.79%, recall: 85.7%, f measure: 68.31%, accuracy: 60.25%
+        - precision: 58.11%, recall: 85.20%, f measure: 69.09%, accuracy: 61.90%
     - Serbian corpus (2 classes):
-        - precision: 53.56%, recall: 82.28%, f measure: 64.88%, accuracy: 55.47%
+        - precision: 53.98%, recall: 82.97%, f measure: 65.42%, accuracy: 56.12%
     - Serbian corpus (3 classes):
-        - precision: 62.14%, recall: 95.25% f measure: 75.22%, accuracy: 62.61%
-        - 0.02 precision: 55.26%, recall: 88.59%, f measure: 68.06%, accuracy: 56.63%
+        - precision: 39.03%, recall: 36.31% f measure: 32,46%, accuracy: 57.54%
 
 - Supervised:
     - English corpus (2 classes):
-        - negative: precision: 77%, recall: 80%, f measure: 79%
-        - positive: precision: 78%, recall: 74%, f measure: 76%
+        - precision: 76.50%, recall: 75.50%, f measure: 75.50%, accuracy: 76.00%
     - Serbian corpus (2 classes):
-        - negative: precision: 71%, recall: 68%, f measure: 70%
-        - positive: precision: 68%, recall: 71%, f measure: 69%
+        - precision: 67%, recall: 67%, f measure: 67%, accuracy: 67%
     - Serbian corpus (3 classes):
-        - negative: precision: 49%, recall: 49%, f measure: 49%
-        - neutral: precision: 45%, recall: 50%, f measure: 47%
-        - positive: precision: 53%, recall: 47%, f measure: 50%
+        - precision: 49%, recall: 49%, f measure: 49%, accuracy: 48.60%
+        
 ## References:
 - Manning, Christopher D., and Hinrich Schütze. Foundations of statistical natural language processing.
 Vol. 999. Cambridge: MIT press, 1999.
