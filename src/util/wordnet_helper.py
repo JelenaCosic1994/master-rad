@@ -1,6 +1,5 @@
 import src.util.converter as converter
 import src.util.loader as loader
-import src.util.serbian_stemmer as serbian_stemmer
 import src.util.constants as const
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
@@ -343,12 +342,8 @@ class WordNetHelper:
                 if pos != -1 and (pos != neg or pos != 0):
                     full_text += 'prava rec: result word: ' + str(word) + ' sentiment: pos :' + str(pos) + " neg: " + str(
                         neg) + "\n"
-                    if neg > pos:
-                        pos_score_text += pos
-                        neg_score_text += neg
-                    else:
-                        pos_score_text += pos
-                        neg_score_text += neg
+                    pos_score_text += pos
+                    neg_score_text += neg
                     count_words += 1
 
         return pos_score_text, neg_score_text, count_words, full_text
@@ -413,10 +408,6 @@ class WordNetHelper:
                 continue
 
             result_word = lemma.lower().strip()
-
-            # stemming
-            # stem_word = serbian_stemmer.stem_str(word)
-            # result_word = stem_word.strip()
 
             opis += "word: " + str(word) + " lema: " + str(result_word) + " PRAVA REC!\n"
             clean_text.append(result_word)
