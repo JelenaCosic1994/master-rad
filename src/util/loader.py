@@ -163,4 +163,4 @@ def load_text_dictionary(ordinary, dir_path, three_classes):
                     lemma = splits[2]
                     data.append((word, tag, lemma))
                 file.close()
-    return data, filename
+    return data

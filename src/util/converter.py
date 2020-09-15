@@ -37,7 +37,7 @@ def convert_from_float_to_string(num_float):
             num_string = '0'*n + num_string
         return num_string
     except:
-        return -1  # TODO check if this is correct
+        return -1
 
 
 def convert_serbian_word_to_aurora(word):

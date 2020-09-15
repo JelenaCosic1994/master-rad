@@ -38,9 +38,9 @@ def create_model(wordnet_helper, corpus, is_english, three_classes, wnsrb_param=
 
             data.append(word_list)
         else:
-            clean_text, opis, filename = wordnet_helper.clear_serbian_text(i, three_classes)
+            clean_text = wordnet_helper.clear_serbian_text(i, three_classes)
             for word in clean_text:
-                pos, neg, opis = wordnet_helper.get_score_for_serbian_word(word, wnsrb_param, is_prefix)
+                pos, neg = wordnet_helper.get_score_for_serbian_word(word, wnsrb_param, is_prefix)
                 diff = pos - neg
                 if word not in vocabulary:
                     vocabulary[word] = (id, diff)

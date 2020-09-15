@@ -40,27 +40,27 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(-1, neg_score)
 
     def test_get_score_for_serbian_word(self):
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'o', False)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'o', False)
         self.assertEqual(0.125, pos_score)
         self.assertEqual(0.250, neg_score)
 
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'c', False)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'c', False)
         self.assertEqual(0.250, pos_score)
         self.assertEqual(0.125, neg_score)
 
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'd', False)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'd', False)
         self.assertEqual(-1, pos_score)
         self.assertEqual(-1, neg_score)
 
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'o', True)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'o', True)
         self.assertEqual(0.125, pos_score)
         self.assertEqual(0.250, neg_score)
 
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'c', True)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'c', True)
         self.assertEqual(0.250, pos_score)
         self.assertEqual(0.125, neg_score)
 
-        pos_score, neg_score, desc = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'd', True)
+        pos_score, neg_score = self.wordnetHelper.get_score_for_serbian_word('senzacija', 'd', True)
         self.assertEqual(-1, pos_score)
         self.assertEqual(-1, neg_score)
 
@@ -232,8 +232,8 @@ class MyTestCase(unittest.TestCase):
                      ('od', 'PREP', 'od'),
                      ('strane', 'N:f', 'strana'), ('većine', 'N:f', 'većina'), ('kritičara', 'N:m', 'kritičar'),
                      ('.', 'SENT', '.')]
-        loader.load_text_dictionary = Mock(return_value=(data_text, '1_pos.tt'))
-        clean_text, opis, filename = self.wordnetHelper.clear_serbian_text(1, False)
+        loader.load_text_dictionary = Mock(return_value=data_text)
+        clean_text = self.wordnetHelper.clear_serbian_text(1, False)
         result_clean_text = ['braća', 'koen', 'coen', 'brothers', 'poznati', 'triler', 'oprobati', 'komedija',
                              'postignuti', 'potpun', 'uspeh',
                              'film', 'pojaviti', 'vrlo', 'loše', 'prihvatiti', 'nije', 'nažalost', 'uspeti', 'zablista',
@@ -265,7 +265,6 @@ class MyTestCase(unittest.TestCase):
                              'kinematografija', 'projekt', 'nasmejati', 'zbuniti', 'zadiviti', 'razlog', 'smatra',
                              'cenjen', 'komedija', 'strana', 'većina', 'kritičar']
         self.assertEqual(result_clean_text, clean_text)
-        self.assertEqual('1_pos.tt', filename)
 
     def test_clear_english_text(self):
         text = "plot : two teen couples go to a church party , drink and then drive . " \
@@ -388,15 +387,11 @@ class MyTestCase(unittest.TestCase):
                        "it also wrapped production two years ago and has been sitting on the shelves ever since . whatever . . . skip it ! " \
                        "where's joblo coming from ? a nightmare of elm street 3 ( 7/10 ) - blair witch 2 ( 7/10 ) - the crow " \
                        "( 9/10 ) - the crow : salvation ( 4/10 ) - lost highway ( 10/10 ) - memento ( 10/10 ) - the others ( 9/10 ) - stir of echoes ( 8/10 ) "
-        pos_score_text, neg_score_text, count_words, full_text = self.wordnetHelper.get_score_for_text(1, text_english,
-                                                                                                       True, False)
+        pos_score_text, neg_score_text, count_words = self.wordnetHelper.get_score_for_text(1, text_english, True, False)
         self.assertEqual(19.23979521295697, pos_score_text)
         self.assertEqual(17.52865682112006, neg_score_text)
         self.assertEqual(125, count_words)
 
-        file_log = open(".." + os.sep + ".." + os.sep + "output_data" + os.sep + "sentimenti_log_test.txt", "w",
-                        encoding='utf8')
-        set_words = set()
         data_text = [('Braća', 'A:aem', 'Braća'), ('Koen', 'N:m', 'Koen'), ('(', 'PUNCT', '('), ('Coen', 'N:m', 'Coen'),
                      ('brothers', 'N:m', 'brothers'), (')', 'PUNCT', ')'), ('iako', 'CONJ', 'iako'),
                      ('poznati', 'V:m', 'poznati'),
@@ -564,7 +559,7 @@ class MyTestCase(unittest.TestCase):
                      ('od', 'PREP', 'od'),
                      ('strane', 'N:f', 'strana'), ('većine', 'N:f', 'većina'), ('kritičara', 'N:m', 'kritičar'),
                      ('.', 'SENT', '.')]
-        loader.load_text_dictionary = Mock(return_value=(data_text, '1_pos.tt'))
+        loader.load_text_dictionary = Mock(return_value=data_text)
         result_clean_text = ['braća', 'koen', 'coen', 'brothers', 'poznati', 'triler', 'oprobati', 'komedija',
                              'postignuti', 'potpun', 'uspeh',
                              'film', 'pojaviti', 'vrlo', 'loše', 'prihvatiti', 'nije', 'nažalost', 'uspeti', 'zablista',
@@ -595,25 +590,19 @@ class MyTestCase(unittest.TestCase):
                              '“', 'velik', 'dostignuće', 'moderan',
                              'kinematografija', 'projekt', 'nasmejati', 'zbuniti', 'zadiviti', 'razlog', 'smatra',
                              'cenjen', 'komedija', 'strana', 'većina', 'kritičar']
-        self.wordnetHelper.clear_serbian_text = Mock(return_value=(result_clean_text, '', '1_pos.tt'))
-        pos_score_text, neg_score_text, count_words, full_text = self.wordnetHelper.get_score_for_text(1, '', False,
-                                                                                                       True, 'o', False,
-                                                                                                       file_log,
-                                                                                                       set_words)
+        self.wordnetHelper.clear_serbian_text = Mock(return_value=result_clean_text)
+        pos_score_text, neg_score_text, count_words = self.wordnetHelper.get_score_for_text(1, '', False, True, 'o', False)
         self.assertEqual(6.616713333333333, pos_score_text)
         self.assertEqual(2.667046666666667, neg_score_text)
         self.assertEqual(31, count_words)
 
-        pos_score_text, neg_score_text, count_words, full_text = self.wordnetHelper.get_score_for_text(1, '', False,
-                                                                                                       True, 'c', False,
-                                                                                                       file_log,
-                                                                                                       set_words)
+        pos_score_text, neg_score_text, count_words = self.wordnetHelper.get_score_for_text(1, '', False, True, 'c', False)
         self.assertEqual(8.116963333333333, pos_score_text)
         self.assertEqual(1.1667966666666667, neg_score_text)
         self.assertEqual(31, count_words)
 
     def test_swn_polarity_english(self):
-        self.wordnetHelper.get_score_for_text = Mock(return_value=(19.23979521295697, 17.52865682112006, 125, ''))
+        self.wordnetHelper.get_score_for_text = Mock(return_value=(19.23979521295697, 17.52865682112006, 125))
         text_english = "plot : two teen couples go to a church party , drink and then drive . " \
                        "they get into an accident . " \
                        "one of the guys dies , but his girlfriend continues to see him in her life , and has nightmares ." \
@@ -646,16 +635,12 @@ class MyTestCase(unittest.TestCase):
                        "it also wrapped production two years ago and has been sitting on the shelves ever since . whatever . . . skip it ! " \
                        "where's joblo coming from ? a nightmare of elm street 3 ( 7/10 ) - blair witch 2 ( 7/10 ) - the crow " \
                        "( 9/10 ) - the crow : salvation ( 4/10 ) - lost highway ( 10/10 ) - memento ( 10/10 ) - the others ( 9/10 ) - stir of echoes ( 8/10 ) "
-        result_class, full_text = self.wordnetHelper.swn_polarity(1, text_english, True, False)
+        result_class = self.wordnetHelper.swn_polarity(1, text_english, True, False)
         self.assertEqual(const.POSITIVE, result_class)
 
     def test_swn_polarity_serbian(self):
-        file_log = open(".." + os.sep + ".." + os.sep + "output_data" + os.sep + "sentimenti_log_test.txt", "w",
-                        encoding='utf8')
-        set_words = set()
-        self.wordnetHelper.get_score_for_text = Mock(return_value=(8.116963333333333, 1.1667966666666667, 31, ''))
-        result_class, full_text = self.wordnetHelper.swn_polarity(1, '', False, True, 'c', False, file_log, set_words,
-                                                                  0.05)
+        self.wordnetHelper.get_score_for_text = Mock(return_value=(8.116963333333333, 1.1667966666666667, 31))
+        result_class = self.wordnetHelper.swn_polarity(1, '', False, True, 'c', False, 0.05)
         self.assertEqual(const.POSITIVE, result_class)
 
 

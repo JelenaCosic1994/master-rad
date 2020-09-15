@@ -5,7 +5,6 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk import word_tokenize, pos_tag
-import os
 
 
 class WordNetHelper:
@@ -74,8 +73,7 @@ class WordNetHelper:
                 "neg_score": list(neg_score)}
         return data
 
-    def calc_percents_for_corpus(self, corpus, is_english, three_classes, wnsrb_param=None, is_prefix=None,
-                                 treshold_value=None):
+    def calc_percents_for_corpus(self, corpus, is_english, three_classes, wnsrb_param=None, is_prefix=None, treshold_value=None):
         """
         Function for calculating precision, recall, f measure and accuracy for given corpus
         :param corpus: given corpus (english or serbian)
@@ -88,8 +86,7 @@ class WordNetHelper:
         :param treshold_value: value for neutral class range
         :return: precision, recall, f measure and accuracy for given corpus
         """
-        file_log = open(".." + os.sep + "output_data" + os.sep + "sentimenti_log.txt", "w", encoding='utf8')
-        set_words = set()
+
         i = 1
         # variables for two classes
         tp = 0
@@ -109,58 +106,9 @@ class WordNetHelper:
         neu_neg = 0
         neu_neu = 0
 
-        j = 1
-        k = 1
-        l1 = 1
         for text, rating in corpus:
-            new_rating, full_text = self.swn_polarity(i, text, is_english, three_classes, wnsrb_param, is_prefix,
-                                                      file_log, set_words, treshold_value)
-            print(i)
+            new_rating = self.swn_polarity(i, text, is_english, three_classes, wnsrb_param, is_prefix, treshold_value)
             i += 1
-
-            if (not is_english) and new_rating != rating:
-                if rating == const.POSITIVE:
-                    file1 = open(".." + os.sep + "output_data" + os.sep + "WronglyInPos_" + wnsrb_param + os.sep + str(
-                        j) + "_wordsFromWN.txt", "w", encoding='utf8')
-                    file2 = open(
-                        ".." + os.sep + "output_data" + os.sep + "WronglyInPos_" + wnsrb_param + os.sep + str(
-                            j) + "_review.txt", "w",
-                        encoding='utf8')
-                    file1.write(full_text)
-                    file1.close()
-                    file2.write(str(text) + "\nold rating: " + str(rating) + " new rating:" + str(new_rating))
-                    file2.close()
-                    j += 1
-
-                if rating == const.NEGATIVE:
-                    file1 = open(
-                        ".." + os.sep + "output_data" + os.sep + "WronglyInNeg_" + wnsrb_param + os.sep + str(
-                            k) + "_wordsFromWN.txt", "w",
-                        encoding='utf8')
-                    file2 = open(
-                        ".." + os.sep + "output_data" + os.sep + "WronglyInNeg_" + wnsrb_param + os.sep + str(
-                            k) + "_review.txt", "w",
-                        encoding='utf8')
-                    file1.write(full_text)
-                    file1.close()
-                    file2.write(str(text) + "\nold rating: " + str(rating) + " new rating:" + str(new_rating))
-                    file2.close()
-                    k += 1
-
-                if rating == const.NEUTRAL:
-                    file1 = open(
-                        ".." + os.sep + "output_data" + os.sep + "WronglyInNeu_" + wnsrb_param + os.sep + str(
-                            l1) + "_wordsFromWN.txt", "w",
-                        encoding='utf8')
-                    file2 = open(
-                        ".." + os.sep + "output_data" + os.sep + "WronglyInNeu_" + wnsrb_param + os.sep + str(
-                            l1) + "_review.txt", "w",
-                        encoding='utf8')
-                    file1.write(full_text)
-                    file1.close()
-                    file2.write(str(text) + "\nold rating: " + str(rating) + " new rating:" + str(new_rating))
-                    file2.close()
-                    l1 += 1
 
             if three_classes:
                 if rating == const.POSITIVE:
@@ -184,7 +132,6 @@ class WordNetHelper:
                         neu_neg += 1
                     if new_rating == const.NEUTRAL:
                         neu_neu += 1
-
             else:
                 if rating == const.POSITIVE:
                     if new_rating == const.POSITIVE:
@@ -200,12 +147,12 @@ class WordNetHelper:
         print("FOR POSITIVE CLASS: pos:" + str(pos_pos) + ", neg: " + str(pos_neg) + ", neu:" + str(pos_neu))
         print("FOR NEGATIVE CLASS: pos:" + str(neg_pos) + ", neg: " + str(neg_neg) + ", neu:" + str(neg_neu))
         print("FOR NEUTRAL CLASS: pos:" + str(neu_pos) + ", neg: " + str(neu_neg) + ", neu:" + str(neu_neu))
-        ukupno_neu = neg_neu + pos_neu + neu_neu
-        ukupno_pos = neg_pos + pos_pos + neu_pos
-        ukupno_neg = neg_neg + pos_neg + neu_neg
-        print("Positive: " + str(ukupno_pos))
-        print("Negative: " + str(ukupno_neg))
-        print("Neutral: " + str(ukupno_neu))
+        sum_neu = neg_neu + pos_neu + neu_neu
+        sum_pos = neg_pos + pos_pos + neu_pos
+        sum_neg = neg_neg + pos_neg + neu_neg
+        print("Positive: " + str(sum_pos))
+        print("Negative: " + str(sum_neg))
+        print("Neutral: " + str(sum_neu))
 
         if three_classes:
             # calculating
@@ -262,8 +209,7 @@ class WordNetHelper:
 
             return precision, recall, f_measure, accuracy
 
-    def swn_polarity(self, ordinal, text, is_english, three_classes, wnsrb_param=None, is_prefix=None, file_log=None,
-                     set_words=None, treshold_value=None):
+    def swn_polarity(self, ordinal, text, is_english, three_classes, wnsrb_param=None, is_prefix=None, treshold_value=None):
         """
         Function for calculating sentiment polarity: NEGATIVE or POSITIVE for given text
         :param ordinal: ordinal number for text in dictionary
@@ -277,32 +223,28 @@ class WordNetHelper:
         :param treshold_value: value for neutral class range
         :return: sentiment polarity for given text
         """
-        pos_score_text, neg_score_text, count_words, full_text = self.get_score_for_text(ordinal, text, is_english,
+        pos_score_text, neg_score_text, count_words = self.get_score_for_text(ordinal, text, is_english,
                                                                                          three_classes, wnsrb_param,
-                                                                                         is_prefix, file_log, set_words)
+                                                                                         is_prefix)
         pos_avg_text, neg_avg_text = (pos_score_text / count_words, neg_score_text / count_words) if count_words != 0 else (0, 0)
 
         diff_1 = round(pos_avg_text - neg_avg_text, 2)
         diff_2 = round(neg_avg_text - pos_avg_text, 2)
 
-        full_text += "\n score for text: positive - " + str(round(pos_avg_text, 2)) + " , negative - " + str(
-            round(neg_avg_text, 2)) + " and diff: " + str(diff_1) + "\n"
-
         if three_classes:
             if abs(diff_1) <= treshold_value:
-                return const.NEUTRAL, full_text
+                return const.NEUTRAL
             if diff_1 > treshold_value:
-                return const.POSITIVE, full_text
+                return const.POSITIVE
             if diff_2 > treshold_value:
-                return const.NEGATIVE, full_text
+                return const.NEGATIVE
         else:
             if pos_avg_text > neg_avg_text:
-                return const.POSITIVE, full_text
+                return const.POSITIVE
             else:
-                return const.NEGATIVE, full_text
+                return const.NEGATIVE
 
-    def get_score_for_text(self, ordinal, text, is_english, three_classes, wnsrb_param=None, is_prefix=None,
-                           file_log=None, set_words=None):
+    def get_score_for_text(self, ordinal, text, is_english, three_classes, wnsrb_param=None, is_prefix=None):
         """
         Private function for calculating score for text
         :param ordinal: ordinal number for text in dictionary
@@ -319,34 +261,24 @@ class WordNetHelper:
         pos_score_text = 0
         neg_score_text = 0
 
-        full_text = ""
         if is_english:
             clean_text = self.clear_english_text(text)
             for lemma, wn_tag in clean_text:
                 pos, neg = self.get_score_for_english_word(lemma, wn_tag)
-
                 if pos != -1 and (pos != neg or pos != 0):
                     pos_score_text += pos
                     neg_score_text += neg
                     count_words += 1
         else:
-            clean_text, opis, filename = self.clear_serbian_text(ordinal, three_classes)
-            full_text += opis
-            file_log.write("Tekst: " + filename + "\n")
+            clean_text = self.clear_serbian_text(ordinal, three_classes)
             for word in clean_text:
-                pos, neg, desc = self.get_score_for_serbian_word(word, wnsrb_param, is_prefix)
-                if word not in set_words:
-                    file_log.write(desc + "\n")
-                    set_words.add(word)
-
+                pos, neg = self.get_score_for_serbian_word(word, wnsrb_param, is_prefix)
                 if pos != -1 and (pos != neg or pos != 0):
-                    full_text += 'prava rec: result word: ' + str(word) + ' sentiment: pos :' + str(pos) + " neg: " + str(
-                        neg) + "\n"
                     pos_score_text += pos
                     neg_score_text += neg
                     count_words += 1
 
-        return pos_score_text, neg_score_text, count_words, full_text
+        return pos_score_text, neg_score_text, count_words
 
     def clear_english_text(self, text):
         """
@@ -387,8 +319,7 @@ class WordNetHelper:
         """
         clean_text = []
 
-        data_text, filename = loader.load_text_dictionary(ordinal, self._dictionary_path, three_classes)
-        opis = ""
+        data_text = loader.load_text_dictionary(ordinal, self._dictionary_path, three_classes)
         for w, tag, lemma in data_text:
             # convert word to lowercase and delete spaces
             word = w.lower().strip()
@@ -399,20 +330,16 @@ class WordNetHelper:
 
             # ignore stop words
             if word in self._serbian_stop_words:
-                opis += "word: " + str(word) + " stop rec\n"
                 continue
 
-            # lemmatization
             if not (tag.startswith("ADV") or tag.startswith("A:") or tag.startswith("N:") or tag.startswith("V:")):
-                opis += "word: " + str(word) + " tag: " + str(tag) + " nije pravi oblik reci\n"
                 continue
 
             result_word = lemma.lower().strip()
 
-            opis += "word: " + str(word) + " lema: " + str(result_word) + " PRAVA REC!\n"
             clean_text.append(result_word)
 
-        return clean_text, opis, filename
+        return clean_text
 
     def get_score_for_serbian_word(self, word, wnsrb_param, is_prefix):
         """
@@ -433,28 +360,21 @@ class WordNetHelper:
 
         pos_scores = []
         neg_scores = []
-        opis = "rec: " + word.upper()
-        opis += "\nsentimenti.xlsx: \n"
         for i in range(len(sentiments["literal"])):
             lit = sentiments["literal"][i]
             if is_prefix:
                 if lit.startswith(word):
                     pos_scores.append(sentiments["pos_score"][i])
                     neg_scores.append(sentiments["neg_score"][i])
-                    opis += "id: " + str(sentiments["id"][i]) + ", pos score: " + str(
-                        sentiments["pos_score"][i]) + ", neg score: " + str(sentiments["neg_score"][i]) + "\n"
             else:
                 if word == lit:
                     pos_scores.append(sentiments["pos_score"][i])
                     neg_scores.append(sentiments["neg_score"][i])
-                    opis += "id: " + str(sentiments["id"][i]) + ", pos score: " + str(
-                        sentiments["pos_score"][i]) + ", neg score: " + str(sentiments["neg_score"][i]) + "\n"
 
         if len(pos_scores) > 0:
-            return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores), opis
+            return sum(pos_scores) / len(pos_scores), sum(neg_scores) / len(neg_scores)
         else:
-            opis += "rec nije pronadjena \n"
-            return -1, -1, opis
+            return -1, -1
 
     def get_score_for_english_word(self, lemma, wn_tag):
         """

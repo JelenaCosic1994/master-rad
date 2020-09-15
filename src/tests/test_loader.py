@@ -112,24 +112,19 @@ class MyTestCase(unittest.TestCase):
 
     def test_load_text_dictionary(self):
         file_path = ".." + os.sep + ".." + os.sep + "input_data" + os.sep + "dictionary"
-        result_data_pos, result_filename_pos = loader.load_text_dictionary(1, file_path, True)
-        self.assertEqual('1_pos.tt', result_filename_pos)
+        result_data_pos = loader.load_text_dictionary(1, file_path, True)
         self.assertEqual(('Braća', 'A:aem', 'Braća'), result_data_pos[0])
 
-        result_data_neutr, result_filename_neutr = loader.load_text_dictionary(982, file_path, True)
-        self.assertEqual('141_neutr.tt', result_filename_neutr)
+        result_data_neutr = loader.load_text_dictionary(982, file_path, True)
         self.assertEqual(('film', 'N:m', 'film'), result_data_neutr[15])
 
-        result_data_neg, result_filename_neg = loader.load_text_dictionary(1698, file_path, True)
-        self.assertEqual('16_neg.tt', result_filename_neg)
+        result_data_neg = loader.load_text_dictionary(1698, file_path, True)
         self.assertEqual(('Day', 'A:aem', 'Day'), result_data_neg[5])
 
-        result_data_pos_2, result_filename_pos_2 = loader.load_text_dictionary(154, file_path, False)
-        self.assertEqual('154_pos.tt', result_filename_pos_2)
+        result_data_pos_2 = loader.load_text_dictionary(154, file_path, False)
         self.assertEqual(('je', 'PRO', 'ona'), result_data_pos_2[9])
 
-        result_data_neg_2, result_filename_neg_2 = loader.load_text_dictionary(898, file_path, False)
-        self.assertEqual('57_neg.tt', result_filename_neg_2)
+        result_data_neg_2 = loader.load_text_dictionary(898, file_path, False)
         self.assertEqual(('nova', 'A:aef', 'nov'), result_data_neg_2[3])
 
 
